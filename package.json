@@ -1,0 +1,22 @@
+{
+  "name": "api-2023.1-back-end-system",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/TheAchieversDSM/API-2023.1-Back-End-System.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/TheAchieversDSM/API-2023.1-Back-End-System/issues"
+  },
+  "homepage": "https://github.com/TheAchieversDSM/API-2023.1-Back-End-System#readme"
+}
