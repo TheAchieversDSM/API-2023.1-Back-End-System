@@ -6,6 +6,9 @@ export class Alerta {
   id!: number;
 
   @Column()
+  nome!: string;
+
+  @Column()
   id_estacao!: number;
 
   @Column()
