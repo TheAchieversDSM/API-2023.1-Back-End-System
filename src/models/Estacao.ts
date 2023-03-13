@@ -13,4 +13,7 @@ export class Estacao {
 
   @Column()
   long!: number;
+
+  @Column()
+  unixtime!: number;
 }
