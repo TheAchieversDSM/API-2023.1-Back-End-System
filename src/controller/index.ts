@@ -1,3 +1,5 @@
 import EstacaoController from "./estacao";
+import AlertaController from "./alerta";
 
-export { EstacaoController };
+export { EstacaoController,
+        AlertaController };
