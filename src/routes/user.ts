@@ -3,6 +3,7 @@ import { UserControler } from "../controller";
 
 const user = Router();
 
-user.use("/cadastro", UserControler.createUser);
-
+user.post("/cadastro", UserControler.createUser);
+user.get("/usuarios/:id", UserControler.getUserById);
+user.get("/usuarios/", UserControler.getAllUser);
 export default user;
