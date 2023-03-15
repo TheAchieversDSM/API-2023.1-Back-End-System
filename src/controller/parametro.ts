@@ -24,6 +24,29 @@ class ParametroController {
         }
     }
 
+    public async getParametroById(req: Request, res: Response, next: NextFunction) {
+        const { id } = req.params;
+        try {
+            const getById = await parametroRepositorio
+                .createQueryBuilder("parametro")
+                .where("parametro.id = :id", { id: id })
+                .getOne();
+            console.log(getById);
+            res.json(getById);
+        } catch (error) {
+            res.json(error);
+        }
+    }
 
+    public async getAllParametro(req: Request, res: Response, next: NextFunction){
+        try{
+            const getAllParametro = await parametroRepositorio
+                .createQueryBuilder("parametro")
+                .getMany();
+            res.json(getAllParametro);
+        } catch ( error ) {
+            res.json(error);
+        }
+    }
 }
 export default new ParametroController();
