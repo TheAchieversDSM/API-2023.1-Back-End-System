@@ -2,20 +2,20 @@ import { Request, Response, NextFunction } from "express";
 import { DataBaseSource } from "../config/database";
 import { Alerta } from "../models/index";
 
-const userReposiroty = DataBaseSource.getRepository(Alerta);
+const alertaRepository = DataBaseSource.getRepository(Alerta);
 
 class AlertaController {
   public async postAlerta(req: Request, res: Response, next: NextFunction) {
     const { nome, id_estacao, id_parametro, valorMax, valorMinimo } = req.body;
     try {
-      const create_alerta= userReposiroty.create({
+      const create_alerta= alertaRepository.create({
         nome: nome,
         id_estacao: id_estacao,
         id_parametro: id_parametro,
         valorMax: valorMax,
         valorMinimo: valorMinimo,
       });
-      await userReposiroty.save(create_alerta);
+      await alertaRepository.save(create_alerta);
       return res
         .status(201)
         .json({ ok: `Cadastro do alerta '${nome}' feito com sucesso` });
@@ -23,5 +23,31 @@ class AlertaController {
       return res.status(406).json({ error: error });
     }
   }
+
+  public async getAlertaById(req: Request, res: Response, next: NextFunction) {
+    const { id } = req.params;
+    try {
+      const getById = await alertaRepository
+        .createQueryBuilder("alerta")
+        .where("alerta.id = :id", { id: id })
+        .getOne();
+      console.log(getById);
+      res.json(getById);
+    } catch (error) {
+      res.json(error);
+    }
+  }
+
+  public async getAllAlertas(req: Request, res: Response, next: NextFunction) {
+    try {
+      const getAllAlertas = await alertaRepository
+        .createQueryBuilder("alerta")
+        .getMany();
+      res.json(getAllAlertas);
+    } catch (error) {
+      res.json(error);
+    }
+  }
+
 }
 export default new AlertaController();
