@@ -1,7 +1,8 @@
 import "reflect-metadata";
 import { DataSource } from "typeorm";
 import * as dotenv from "dotenv";
-import { Estacao, User } from "../models";
+import { Estacao, Alerta, User } from "../models";
+import { Parametro } from "../models/Parametro";
 
 dotenv.config();
 
@@ -13,5 +14,5 @@ export const DataBaseSource = new DataSource({
   password: process.env.DB_PASSWORD,
   database: process.env.DATABASE,
   synchronize: true,
-  entities: [User, Estacao],
+  entities: [Estacao, Alerta, Parametro, User],
 });
