@@ -29,7 +29,6 @@ class EstacaoController {
         .createQueryBuilder("estacao")
         .where("estacao.id = :id", { id: id })
         .getOne();
-      console.log(getById);
       res.json(getById);
     } catch (error) {
       res.json(error);
