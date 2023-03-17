@@ -31,7 +31,6 @@ class AlertaController {
         .createQueryBuilder("alerta")
         .where("alerta.id = :id", { id: id })
         .getOne();
-      console.log(getById);
       res.json(getById);
     } catch (error) {
       res.json(error);
