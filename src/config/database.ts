@@ -1,8 +1,7 @@
 import "reflect-metadata";
 import { DataSource } from "typeorm";
 import * as dotenv from "dotenv";
-import { Estacao, Alerta, User } from "../models";
-import { Parametro } from "../models/Parametro";
+import { Estacao, Alerta, User, Parametro } from "../models";
 
 dotenv.config();
 

@@ -31,7 +31,6 @@ class ParametroController {
                 .createQueryBuilder("parametro")
                 .where("parametro.id = :id", { id: id })
                 .getOne();
-            console.log(getById);
             res.json(getById);
         } catch (error) {
             res.json(error);
