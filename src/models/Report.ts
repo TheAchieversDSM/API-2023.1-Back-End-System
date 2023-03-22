@@ -1,23 +1,28 @@
 import {
-    Entity,
-    PrimaryGeneratedColumn,
-    Column,
-    OneToOne,
-    JoinColumn,
-    OneToMany,
-  } from "typeorm";
-  
-  @Entity({ name: "report" })
-  export class Report {
-    @PrimaryGeneratedColumn()
-    id!: number;
-  
-    @Column()
-    id_alerta!: number;
-  
-    @Column()
-    unixtime!: number;
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  OneToOne,
+  JoinColumn,
+  OneToMany,
+  ManyToOne,
+} from "typeorm";
+import { Alerta } from "./Alerta";
 
-    @Column()
-    nivel!: number;
-  }
+@Entity({ name: "report" })
+export class Report {
+  @PrimaryGeneratedColumn()
+  id!: number;
+
+  @Column()
+  unixtime!: number;
+
+  @Column()
+  nivel!: number;
+
+  @ManyToOne(() => Alerta, (alerta) => alerta.reports)
+  @JoinColumn({
+    name: "fk_alerta_id"
+  })
+  alerta!: Alerta[];
+}
