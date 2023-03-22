@@ -1,4 +1,11 @@
-import { Entity, PrimaryGeneratedColumn, Column } from "typeorm";
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  ManyToOne,
+  OneToMany,
+} from "typeorm";
+import { EstacaoParametro } from "./EstacaoParametro";
 
 @Entity({ name: "estacao" })
 export class Estacao {
@@ -16,4 +23,10 @@ export class Estacao {
 
   @Column()
   unixtime!: number;
+
+  @OneToMany(
+    () => EstacaoParametro,
+    (estacao_parametro) => estacao_parametro.estacao
+  )
+  estacao_parametro!: EstacaoParametro;
 }

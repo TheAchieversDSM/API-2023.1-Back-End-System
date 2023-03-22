@@ -1,23 +1,44 @@
-import { Entity, PrimaryGeneratedColumn, Column } from "typeorm";
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  ManyToOne,
+  OneToMany,
+  OneToOne,
+  JoinColumn,
+} from "typeorm";
+import { EstacaoParametro } from "./EstacaoParametro";
+import { TipoParametro } from "./TipoParametro";
 
-@Entity({ name: "parametro"})
+@Entity({ name: "parametro" })
 export class Parametro {
-    @PrimaryGeneratedColumn()
-    id!: number;
+  @PrimaryGeneratedColumn()
+  id!: number;
 
-    @Column()
-    tipo!: string;
+  @Column()
+  nome!: string;
 
-    @Column()
-    nome!: string;
+  @Column()
+  unidadeDeMedida!: string;
 
-    @Column()
-    unidadeDeMedida!: string;
+  @Column()
+  fator!: number;
 
-    @Column()
-    fator!: number;
+  @Column()
+  offset!: number;
 
-    @Column()
-    offset!: number;
-
+  @OneToOne(() => TipoParametro, (tipo) => tipo.parametro)
+  @JoinColumn({
+    name: "fk_tipo_id",
+  })
+  tipo!: string;
+  /* 
+  @OneToOne(() => Medidas, (medidas) => medidas.parametro)
+  medidas!: Medidas;
+ */
+  @OneToMany(
+    () => EstacaoParametro,
+    (estacao_parametro) => estacao_parametro.parametro
+  )
+  estacao_parametro!: EstacaoParametro;
 }

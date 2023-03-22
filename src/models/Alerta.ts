@@ -1,4 +1,12 @@
-import { Entity, PrimaryGeneratedColumn, Column } from "typeorm";
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  OneToOne,
+  JoinColumn,
+  OneToMany,
+} from "typeorm";
+import { Parametro } from "./Parametro";
 
 @Entity({ name: "alerta" })
 export class Alerta {
@@ -21,6 +29,5 @@ export class Alerta {
   valorMinimo!: number;
 
   @Column()
-  nivel!: number | string;
-
+  nivel!: number;
 }
