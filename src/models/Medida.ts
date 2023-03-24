@@ -5,7 +5,9 @@ import {
     OneToOne,
     JoinColumn,
     OneToMany,
+    ManyToOne,
   } from "typeorm";
+import { Alerta } from "./Alerta";
   
   @Entity({ name: "medida" })
   export class Medida {
@@ -20,4 +22,10 @@ import {
   
     @Column()
     unixtime!: number;
+
+    @OneToMany(
+      () => Alerta,
+      (alertas) => alertas.medidas
+    )
+    alertas!: Alerta
   }

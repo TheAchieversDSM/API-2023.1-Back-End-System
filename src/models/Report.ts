@@ -5,7 +5,9 @@ import {
     OneToOne,
     JoinColumn,
     OneToMany,
+    ManyToOne,
   } from "typeorm";
+import { Alerta } from "./Alerta";
   
   @Entity({ name: "report" })
   export class Report {
@@ -20,4 +22,14 @@ import {
 
     @Column()
     nivel!: number;
+
+    @ManyToOne(
+      () => Alerta,
+      (alertas) => alertas.reports
+    )
+    @JoinColumn({
+      name: "fk_alerta_id",
+    })
+    alertas!: Alerta[]
+
   }

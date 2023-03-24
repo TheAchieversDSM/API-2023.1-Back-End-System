@@ -11,6 +11,14 @@ class ReportController {
     try {
       const getById = await reportRepository
         .createQueryBuilder("report")
+        .select([
+          "al",
+          "rp",
+          "md"
+        ])
+        .from("report", "rp")
+        .leftJoin("rp.alertas", "al")
+        .leftJoin("al.medidas", "md")
         .where("report.id = :id", { id: id })
         .getOne();
       res.json(getById);
@@ -23,6 +31,14 @@ class ReportController {
     try {
       const getAllReports = await reportRepository
         .createQueryBuilder("report")
+        .select([
+          "al",
+          "rp",
+          "md"
+        ])
+        .from("report", "rp")
+        .leftJoin("rp.alertas", "al")
+        .leftJoin("al.medidas", "md")
         .getMany();
       res.json(getAllReports);
     } catch (error) {
