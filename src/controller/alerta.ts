@@ -6,12 +6,11 @@ const alertaRepository = DataBaseSource.getRepository(Alerta);
 
 class AlertaController {
   public async postAlerta(req: Request, res: Response, next: NextFunction) {
-    const { nome, id_estacao, id_parametro, valorMax, valorMinimo, nivel } = req.body;
+    const { nome, id_estacao, id_parametro, valorMax, valorMinimo, nivel } =
+      req.body;
     try {
-      const create_alerta= alertaRepository.create({
+      const create_alerta = alertaRepository.create({
         nome: nome,
-        id_estacao: id_estacao,
-        id_parametro: id_parametro,
         valorMax: valorMax,
         valorMinimo: valorMinimo,
         nivel: nivel,
@@ -48,6 +47,5 @@ class AlertaController {
       res.json(error);
     }
   }
-
 }
 export default new AlertaController();
