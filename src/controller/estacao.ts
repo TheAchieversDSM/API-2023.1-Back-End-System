@@ -44,5 +44,24 @@ class EstacaoController {
       res.json(error);
     }
   }
+  public async pegarEstacaoRelacao(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) {
+    try {
+      const { id } = req.params;
+      const select = await estacaoRepositorio
+        .createQueryBuilder()
+        .select(["es.nome", "pa.nome", "pa.unidadeDeMedida"])
+        .from(Estacao, "es")
+        .leftJoin("es.parametros", "pa")
+        .where("es.id = :id", { id: id })
+        .getOne();
+      res.json(select);
+    } catch (error) {
+      res.json({ err: error });
+    }
+  }
 }
 export default new EstacaoController();
