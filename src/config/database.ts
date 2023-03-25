@@ -8,6 +8,8 @@ import {
   Parametro,
   EstacaoParametro,
   TipoParametro,
+  Report,
+  Medida
 } from "../models";
 
 dotenv.config();
@@ -20,6 +22,7 @@ export const DataBaseSource = new DataSource({
   password: process.env.DB_PASSWORD,
   database: process.env.DATABASE,
   synchronize: true,
-  logging: true,
-  entities: [Estacao, Alerta, Parametro, User, EstacaoParametro, TipoParametro],
+  logging: false,
+  entities: [Estacao, Alerta, Parametro, User, EstacaoParametro, TipoParametro, Report, Medida],
 });
+
