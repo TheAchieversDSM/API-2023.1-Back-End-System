@@ -37,7 +37,7 @@ export class Parametro {
 
   @OneToOne(() => Medida, (medidas) => medidas.parametro)
   medidas!: Medida;
-
+  
   @ManyToMany(() => Estacao, estacao => estacao.parametros)
   estacoes!: Estacao[];
 }
