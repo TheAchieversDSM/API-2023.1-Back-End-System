@@ -21,14 +21,6 @@ export const DataBaseSource = new DataSource({
   password: process.env.DB_PASSWORD,
   database: process.env.DATABASE,
   synchronize: true,
-  logging: true,
-  entities: [
-    Estacao,
-    Alerta,
-    Parametro,
-    User,
-    TipoParametro,
-    Medida,
-    Report,
-  ],
+  logging: false,
+  entities: [Estacao, Alerta, Parametro, User, TipoParametro, Medida, Report],
 });

@@ -2,9 +2,7 @@ import {
   Entity,
   PrimaryGeneratedColumn,
   Column,
-  OneToOne,
   JoinColumn,
-  OneToMany,
   ManyToOne,
 } from "typeorm";
 import { Alerta } from "./Alerta";
@@ -22,7 +20,7 @@ export class Report {
 
   @ManyToOne(() => Alerta, (alerta) => alerta.reports)
   @JoinColumn({
-    name: "fk_alerta_id"
+    name: "fk_alerta_id",
   })
   alerta!: Alerta[];
 }

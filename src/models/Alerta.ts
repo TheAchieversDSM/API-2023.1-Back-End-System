@@ -8,7 +8,6 @@ import {
   ManyToOne,
 } from "typeorm";
 import { Medida } from "./Medida";
-import { Parametro } from "./Parametro";
 import { Report } from "./Report";
 
 @Entity({ name: "alerta" })
@@ -16,9 +15,7 @@ export class Alerta {
   @PrimaryGeneratedColumn()
   id!: number;
 
-  @Column({
-    type: "varchar"
-  })
+  @Column()
   nome!: string;
 
   @Column()
@@ -30,7 +27,7 @@ export class Alerta {
   @Column()
   nivel!: number;
 
-  @ManyToOne(() => Medida, (medida) => medida.alerta)
+  @ManyToOne(() => Medida, (medida) => medida.alertas)
   @JoinColumn({
     name: "fk_medida_id",
   })

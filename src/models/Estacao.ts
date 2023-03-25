@@ -17,6 +17,12 @@ export class Estacao {
   nome!: string;
 
   @Column()
+  uid!: string;
+
+  @Column()
+  UTC!: string;
+
+  @Column()
   lati!: number;
 
   @Column()

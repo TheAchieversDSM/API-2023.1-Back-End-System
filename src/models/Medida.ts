@@ -15,14 +15,17 @@ export class Medida {
   id!: number;
 
   @Column()
+  valorMedido!: string;
+
+  @Column()
   unixtime!: number;
 
-  @OneToMany(() => Alerta, (alerta) => alerta.medida)
-  alerta!: Alerta;
-  
-  @OneToOne(() => Parametro, (parametro) => parametro.medidas)
+  @OneToMany(() => Alerta, (alertas) => alertas.medida)
+  alertas!: Alerta;
+
+  @OneToOne(() => Parametro, (parametros) => parametros.medidas)
   @JoinColumn({
     name: "fk_parametro_id",
   })
-  parametro!: Parametro;
+  parametros!: Parametro;
 }

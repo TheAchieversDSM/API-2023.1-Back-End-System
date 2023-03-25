@@ -2,8 +2,6 @@ import {
   Entity,
   PrimaryGeneratedColumn,
   Column,
-  ManyToOne,
-  OneToMany,
   OneToOne,
   JoinColumn,
   ManyToMany,
@@ -24,6 +22,9 @@ export class Parametro {
   unidadeDeMedida!: string;
 
   @Column()
+  formula!: string;
+
+  @Column()
   fator!: number;
 
   @Column()
@@ -35,9 +36,9 @@ export class Parametro {
   })
   tipo!: string;
 
-  @OneToOne(() => Medida, (medidas) => medidas.parametro)
+  @OneToOne(() => Medida, (medidas) => medidas.parametros)
   medidas!: Medida;
-  
-  @ManyToMany(() => Estacao, estacao => estacao.parametros)
+
+  @ManyToMany(() => Estacao, (estacao) => estacao.parametros)
   estacoes!: Estacao[];
 }
