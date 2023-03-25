@@ -1,4 +1,15 @@
-import { Entity, PrimaryGeneratedColumn, Column } from "typeorm";
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  OneToOne,
+  JoinColumn,
+  OneToMany,
+  ManyToOne,
+} from "typeorm";
+import { Medida } from "./Medida";
+import { Parametro } from "./Parametro";
+import { Report } from "./Report";
 
 @Entity({ name: "alerta" })
 export class Alerta {
@@ -19,4 +30,22 @@ export class Alerta {
 
   @Column()
   valorMinimo!: number;
+
+  @Column()
+  nivel!: number;
+
+  @OneToMany(
+    () => Report,
+    (reports) => reports.alertas
+  )
+  reports!: Report
+
+  @ManyToOne(
+    () => Medida,
+    (medidas) => medidas.alertas
+  )
+  @JoinColumn({
+    name: "fk_medida_id",
+  })
+  medidas!: Medida[]
 }
