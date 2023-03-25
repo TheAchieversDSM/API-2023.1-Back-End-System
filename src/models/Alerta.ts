@@ -16,14 +16,10 @@ export class Alerta {
   @PrimaryGeneratedColumn()
   id!: number;
 
-  @Column()
+  @Column({
+    type: "varchar"
+  })
   nome!: string;
-
-  @Column()
-  id_estacao!: number;
-
-  @Column()
-  id_parametro!: number;
 
   @Column()
   valorMax!: number;

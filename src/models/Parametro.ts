@@ -6,8 +6,9 @@ import {
   OneToMany,
   OneToOne,
   JoinColumn,
+  ManyToMany,
 } from "typeorm";
-import { EstacaoParametro } from "./EstacaoParametro";
+import { Estacao } from "./Estacao";
 import { Medida } from "./Medida";
 import { TipoParametro } from "./TipoParametro";
 
@@ -36,10 +37,7 @@ export class Parametro {
 
   @OneToOne(() => Medida, (medidas) => medidas.parametro)
   medidas!: Medida;
-
-  @OneToMany(
-    () => EstacaoParametro,
-    (estacao_parametro) => estacao_parametro.parametro
-  )
-  estacao_parametro!: EstacaoParametro;
+  
+  @ManyToMany(() => Estacao, estacao => estacao.parametros)
+  estacoes!: Estacao[];
 }

@@ -2,10 +2,11 @@ import {
   Entity,
   PrimaryGeneratedColumn,
   Column,
-  ManyToOne,
-  OneToMany,
+  ManyToMany,
+  JoinTable,
 } from "typeorm";
-import { EstacaoParametro } from "./EstacaoParametro";
+
+import { Parametro } from "./Parametro";
 
 @Entity({ name: "estacao" })
 export class Estacao {
@@ -24,9 +25,9 @@ export class Estacao {
   @Column()
   unixtime!: number;
 
-  @OneToMany(
-    () => EstacaoParametro,
-    (estacao_parametro) => estacao_parametro.estacao
-  )
-  estacao_parametro!: EstacaoParametro;
+  @ManyToMany(() => Parametro, (parametro) => parametro.estacoes)
+  @JoinTable({
+    name: "estacao_parametro",
+  })
+  parametros!: Parametro[];
 }
