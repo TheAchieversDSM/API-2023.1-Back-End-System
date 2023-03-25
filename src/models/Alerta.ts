@@ -30,12 +30,18 @@ export class Alerta {
   @Column()
   nivel!: number;
 
-  @ManyToOne(() => Medida, (medida) => medida.alerta)
+  @OneToMany(
+    () => Report,
+    (reports) => reports.alertas
+  )
+  reports!: Report
+
+  @ManyToOne(
+    () => Medida,
+    (medidas) => medidas.alertas
+  )
   @JoinColumn({
     name: "fk_medida_id",
   })
-  medida!: Alerta[];
-
-  @OneToMany(() => Report, (reports) => reports.alerta)
-  reports!: Report;
+  medidas!: Medida[]
 }
