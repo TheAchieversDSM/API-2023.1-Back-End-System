@@ -8,6 +8,7 @@ import {
   JoinColumn,
 } from "typeorm";
 import { EstacaoParametro } from "./EstacaoParametro";
+import { Medida } from "./Medida";
 import { TipoParametro } from "./TipoParametro";
 
 @Entity({ name: "parametro" })
@@ -32,10 +33,10 @@ export class Parametro {
     name: "fk_tipo_id",
   })
   tipo!: string;
-  /* 
-  @OneToOne(() => Medidas, (medidas) => medidas.parametro)
-  medidas!: Medidas;
- */
+
+  @OneToOne(() => Medida, (medidas) => medidas.parametro)
+  medidas!: Medida;
+
   @OneToMany(
     () => EstacaoParametro,
     (estacao_parametro) => estacao_parametro.parametro

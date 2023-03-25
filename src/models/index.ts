@@ -6,4 +6,13 @@ import { EstacaoParametro } from "./EstacaoParametro";
 import { TipoParametro } from "./TipoParametro";
 import { Report } from "./Report";
 import { Medida } from "./Medida";
-export { Alerta, Estacao, User, Parametro, EstacaoParametro, TipoParametro, Report, Medida };
+export {
+  Alerta,
+  Estacao,
+  User,
+  Parametro,
+  EstacaoParametro,
+  TipoParametro,
+  Report,
+  Medida,
+};
