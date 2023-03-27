@@ -31,7 +31,7 @@ export class Alerta {
   @JoinColumn({
     name: "fk_medida_id",
   })
-  medida!: Alerta[];
+  medida!: Medida[];
 
   @OneToMany(() => Report, (reports) => reports.alerta)
   reports!: Report;

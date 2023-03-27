@@ -34,7 +34,7 @@ export class Parametro {
   @JoinColumn({
     name: "fk_tipo_id",
   })
-  tipo!: string;
+  tipo!: TipoParametro;
 
   @OneToOne(() => Medida, (medidas) => medidas.parametros)
   medidas!: Medida;
