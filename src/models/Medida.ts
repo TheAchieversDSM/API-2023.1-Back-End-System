@@ -5,8 +5,10 @@ import {
   OneToOne,
   JoinColumn,
   OneToMany,
+  ManyToOne,
 } from "typeorm";
 import { Alerta } from "./Alerta";
+import { Estacao } from "./Estacao";
 import { Parametro } from "./Parametro";
 
 @Entity({ name: "medida" })
@@ -23,9 +25,9 @@ export class Medida {
   @OneToMany(() => Alerta, (alertas) => alertas.medida)
   alertas!: Alerta;
 
-  @OneToOne(() => Parametro, (parametros) => parametros.medidas)
-  @JoinColumn({
-    name: "fk_parametro_id",
-  })
-  parametros!: Parametro;
+  @ManyToOne(() => Parametro, (parametros) => parametros.medidas)
+  parametros!: Parametro[];
+
+  @ManyToOne(() => Estacao, (estacao) => estacao.medidas)
+  estacao!: Estacao[];
 }
