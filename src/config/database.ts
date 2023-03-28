@@ -9,6 +9,7 @@ import {
   TipoParametro,
   Medida,
   Report,
+  UnidadeMedida,
 } from "../models";
 
 dotenv.config();
@@ -22,5 +23,5 @@ export const DataBaseSource = new DataSource({
   database: process.env.DATABASE,
   synchronize: true,
   logging: false,
-  entities: [Estacao, Alerta, Parametro, User, TipoParametro, Medida, Report],
+  entities: [Estacao, Alerta, Parametro, User, TipoParametro, Medida, Report, UnidadeMedida],
 });
