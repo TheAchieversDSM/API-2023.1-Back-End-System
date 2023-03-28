@@ -6,6 +6,7 @@ import {
   JoinColumn,
   OneToMany,
   ManyToOne,
+  ManyToMany,
 } from "typeorm";
 import { Alerta } from "./Alerta";
 import { Estacao } from "./Estacao";
@@ -22,8 +23,8 @@ export class Medida {
   @Column()
   unixtime!: number;
 
-  @OneToMany(() => Alerta, (alertas) => alertas.medida)
-  alertas!: Alerta;
+  @ManyToMany(() => Alerta, (alertas) => alertas.medida)
+  alertas!: Alerta[];
 
   @ManyToOne(() => Parametro, (parametros) => parametros.medidas)
   parametros!: Parametro[];
