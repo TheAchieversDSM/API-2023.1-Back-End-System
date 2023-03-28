@@ -47,5 +47,24 @@ class AlertaController {
       res.json(error);
     }
   }
+  public async GetAllReportsWithAlertId(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) {
+    const { id } = req.params;
+    try {
+      const select = await alertaRepository
+        .createQueryBuilder("alerta")
+        .select(["alerta", "reports", "alerta_medida"])
+        .leftJoin("alerta.reports", "reports")
+        .leftJoin("alerta.medida", "alerta_medida")
+        .where("alerta.id = :id", { id: id })
+        .execute();
+      res.json(select);
+    } catch (error) {
+      console.log(error);
+    }
+  }
 }
 export default new AlertaController();
