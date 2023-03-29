@@ -1,10 +1,10 @@
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { Parametro } from "./Parametro";
 
-@Entity({name: "UnidadeMedida"})
+@Entity({name: "unidade_medida"})
 export class UnidadeMedida{
     @PrimaryGeneratedColumn()
-    id!: number;
+    unidade_id!: number;
 
     @Column()
     nome!: string;

@@ -1,14 +1,14 @@
-import { Column, Entity, OneToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 import { Parametro } from "./Parametro";
 
-@Entity()
+@Entity({name: "tipo_parametro"})
 export class TipoParametro {
   @PrimaryGeneratedColumn()
-  id!: number;
+  tipo_id!: number;
 
   @Column()
   nome!: string;
 
-  @OneToOne(() => Parametro, (parametro) => parametro.tipo)
+  @OneToMany(() => Parametro, (parametro) => parametro.tipo)
   parametro!: Parametro;
 }

@@ -16,7 +16,7 @@ import { UnidadeMedida } from "./UnidadeMedida";
 @Entity({ name: "parametro" })
 export class Parametro {
   @PrimaryGeneratedColumn()
-  id!: number;
+  parametro_id!: number;
 
   @Column()
   nome!: string;
@@ -30,11 +30,11 @@ export class Parametro {
   @Column()
   offset!: number;
 
-  @OneToOne(() => TipoParametro, (tipo) => tipo.parametro)
+  @ManyToOne(() => TipoParametro, (tipo) => tipo.parametro)
   @JoinColumn({
     name: "fk_tipo_id",
   })
-  tipo!: TipoParametro;
+  tipo!: TipoParametro[];
 
   @OneToMany(() => Medida, (medidas) => medidas.parametros)
   medidas!: Medida;

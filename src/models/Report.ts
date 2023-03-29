@@ -10,7 +10,7 @@ import { Alerta } from "./Alerta";
 @Entity({ name: "report" })
 export class Report {
   @PrimaryGeneratedColumn()
-  id!: number;
+  report_id!: number;
 
   @Column()
   unixtime!: number;

@@ -13,7 +13,7 @@ import { Parametro } from "./Parametro";
 @Entity({ name: "estacao" })
 export class Estacao {
   @PrimaryGeneratedColumn()
-  id!: number;
+  estacao_id!: number;
 
   @Column()
   nome!: string;

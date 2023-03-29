@@ -15,7 +15,7 @@ import { Report } from "./Report";
 @Entity({ name: "alerta" })
 export class Alerta {
   @PrimaryGeneratedColumn()
-  id!: number;
+  alerta_id!: number;
 
   @Column()
   nome!: string;

@@ -15,7 +15,7 @@ import { Parametro } from "./Parametro";
 @Entity({ name: "medida" })
 export class Medida {
   @PrimaryGeneratedColumn()
-  id!: number;
+  medida_id!: number;
 
   @Column()
   valorMedido!: string;
