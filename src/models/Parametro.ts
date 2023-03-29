@@ -11,6 +11,7 @@ import {
 import { Estacao } from "./Estacao";
 import { Medida } from "./Medida";
 import { TipoParametro } from "./TipoParametro";
+import { UnidadeMedida } from "./UnidadeMedida";
 
 @Entity({ name: "parametro" })
 export class Parametro {
@@ -19,9 +20,6 @@ export class Parametro {
 
   @Column()
   nome!: string;
-
-  @Column()
-  unidadeDeMedida!: string;
 
   @Column()
   formula!: string;
@@ -43,4 +41,10 @@ export class Parametro {
 
   @ManyToMany(() => Estacao, (estacao) => estacao.parametros)
   estacoes!: Estacao[];
+
+  @ManyToOne(() => UnidadeMedida, (unidadeDeMedida) => unidadeDeMedida.parametro)
+  @JoinColumn({
+    name: "fk_unidadeDeMedida_id",
+  })
+  unidadeDeMedida!: UnidadeMedida[];
 }
