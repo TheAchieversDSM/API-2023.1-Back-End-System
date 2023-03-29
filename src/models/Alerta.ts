@@ -6,6 +6,8 @@ import {
   JoinColumn,
   OneToMany,
   ManyToOne,
+  ManyToMany,
+  JoinTable,
 } from "typeorm";
 import { Medida } from "./Medida";
 import { Report } from "./Report";
@@ -27,11 +29,11 @@ export class Alerta {
   @Column()
   nivel!: number;
 
-  @ManyToOne(() => Medida, (medida) => medida.alertas)
-  @JoinColumn({
-    name: "fk_medida_id",
+  @ManyToMany(() => Medida, (medida) => medida.alertas)
+  @JoinTable({
+    name: "alerta_medida"
   })
-  medida!: Alerta[];
+  medida!: Medida[];
 
   @OneToMany(() => Report, (reports) => reports.alerta)
   reports!: Report;
