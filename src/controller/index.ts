@@ -4,5 +4,5 @@ import ParametroController from "./parametro";
 import AlertaController from "./alerta";
 import ReportController from "./report"
 import MedidaController from "./medida";
-
-export { EstacaoController, AlertaController, ParametroController, UserControler, ReportController, MedidaController };
+import UnidadeMedidaController from "./unidadeMedida";
+export { EstacaoController, AlertaController, ParametroController, UserControler, ReportController, MedidaController, UnidadeMedidaController };

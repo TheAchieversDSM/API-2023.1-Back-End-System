@@ -6,6 +6,7 @@ import user from "./user";
 import parametro from "./parametro";
 import report from "./report";
 import medida from "./medida";
+import unidadeMedida from "./unidadeMedida";
 
 const router = Router();
 
@@ -15,5 +16,6 @@ router.use("/alerta", alerta);
 router.use("/parametro", parametro);
 router.use("/report", report);
 router.use("/medida", medida)
+router.use("/unidadeMedida", unidadeMedida)
 
 export default router;
