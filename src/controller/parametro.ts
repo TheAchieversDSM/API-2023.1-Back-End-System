@@ -29,7 +29,7 @@ class ParametroController {
         try {
             const getById = await parametroRepositorio
                 .createQueryBuilder("parametro")
-                .where("parametro.id = :id", { id: id })
+                .where("parametro.parametro_id = :id", { id: id })
                 .getOne();
             res.json(getById);
         } catch (error) {

@@ -55,12 +55,12 @@ class EstacaoController {
         .createQueryBuilder("estacao")
         .select([
           "estacao.nome",
-          "parametro.id",
+          "parametro_id.id",
           "parametro.unidadeDeMedida",
           "parametro.nome",
         ])
         .leftJoin("estacao.parametros", "parametro")
-        .where("estacao.id = :id", { id: id })
+        .where("estacao.estacao_id = :id", { id: id })
         .getMany();
       res.json(select);
     } catch (error) {

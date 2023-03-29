@@ -19,7 +19,7 @@ class ReportController {
         .from("report", "rp")
         .leftJoin("rp.alertas", "al")
         .leftJoin("al.medidas", "md")
-        .where("report.id = :id", { id: id })
+        .where("report.report_id = :id", { id: id })
         .getOne();
       res.json(getById);
     } catch (error) {

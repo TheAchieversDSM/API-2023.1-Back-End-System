@@ -168,7 +168,7 @@ export const generate = async () => {
       .set({
         tipo: () => "1",
       })
-      .where("id = :id", {
+      .where("parametro_id = :id", {
         id: 1,
       })
       .execute();
@@ -178,8 +178,8 @@ export const generate = async () => {
       .into("alerta_medida")
       .values([
         {
-          alertaId: 1,
-          medidaId: 1,
+          alertaAlertaId: 1,
+          medidaMedidaId: 1,
         },
       ])
       .execute();
@@ -190,7 +190,7 @@ export const generate = async () => {
       .set({
         parametros: () => "1",
       })
-      .where("id = :id", { id: 1 })
+      .where("medida_id = :id", { id: 1 })
       .execute();
   } catch (error) {
     console.log("Erro ao gerar dados");
