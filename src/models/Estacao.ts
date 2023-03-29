@@ -4,7 +4,9 @@ import {
   Column,
   ManyToMany,
   JoinTable,
+  OneToMany,
 } from "typeorm";
+import { Medida } from "./Medida";
 
 import { Parametro } from "./Parametro";
 
@@ -36,4 +38,7 @@ export class Estacao {
     name: "estacao_parametro",
   })
   parametros!: Parametro[];
+
+  @OneToMany(() => Medida, (medidas) => medidas.parametros)
+  medidas!: Medida;
 }
