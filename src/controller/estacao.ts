@@ -44,51 +44,24 @@ class EstacaoController {
       res.json(error);
     }
   }
-  public async pegarEstacaoRelacao(
-    req: Request,
-    res: Response,
-    next: NextFunction
-  ) {
+
+  public async pegarEstacoesRelacoes(req: Request, res: Response, next: NextFunction) {
+    const { id } = req.params;
     try {
-      const { id } = req.params;
-      const select = await estacaoRepositorio
-        .createQueryBuilder("estacao")
-        .select([
-          "estacao.nome",
-          "parametro_id.id",
-          "parametro.unidadeDeMedida",
-          "parametro.nome",
-        ])
-        .leftJoin("estacao.parametros", "parametro")
-        .where("estacao.estacao_id = :id", { id: id })
-        .getMany();
+      const select = await estacaoRepositorio.findOne({
+        where: {
+          estacao_id: Number(id),
+        },
+        relations: {
+          parametros: {
+            unidadeDeMedida: true,
+            medidas: true,
+          },
+        },
+      });
       res.json(select);
     } catch (error) {
       console.log(error);
-      res.json({ err: error });
-    }
-  }
-  public async PegarMedidasComParametroEstacao(
-    req: Request,
-    res: Response,
-    next: NextFunction
-  ) {
-    try {
-      const { idParametro, idEstacao } = req.params;
-      const select = await estacaoRepositorio
-        .createQueryBuilder("estacao")
-        .select(["medidas"])
-        .leftJoin("estacao.medidas", "medidas")
-        .leftJoin("medidas.parametros", "ps")
-        .where("medidas.estacaoId = :idEstacao", { idEstacao: idEstacao })
-        .andWhere("medidas.parametrosId = :idParametro", {
-          idParametro: idParametro,
-        })
-        .execute();
-      res.json(select);
-    } catch (error) {
-      console.log(error);
-      res.json({ err: error });
     }
   }
 }

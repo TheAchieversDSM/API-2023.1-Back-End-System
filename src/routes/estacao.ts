@@ -6,7 +6,9 @@ const estacao = Router();
 estacao.post("/cadastro", EstacaoController.postEstacao);
 estacao.get("/pegarEstacoes/", EstacaoController.getAllEstacao);
 estacao.get("/pegarEstacoesPorId/:id", EstacaoController.getEstacaoById);
-estacao.get("/pegarEstacoesRelacoes/:id", EstacaoController.pegarEstacaoRelacao);
-estacao.get("/pegarEstacoesRelacoes/:idEstacao/:idParametro", EstacaoController.PegarMedidasComParametroEstacao);
+estacao.get(
+  "/pegarEstacoesRelacoes/:id",
+  EstacaoController.pegarEstacoesRelacoes
+);
 
 export default estacao;
