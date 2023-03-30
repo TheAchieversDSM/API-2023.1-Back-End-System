@@ -29,7 +29,7 @@ class AlertaController {
     try {
       const getById = await alertaRepository
         .createQueryBuilder("alerta")
-        .where("alerta_id.id = :id", { id: id })
+        .where("alerta.alerta_id = :id", { id: id })
         .getOne();
       res.json(getById);
     } catch (error) {

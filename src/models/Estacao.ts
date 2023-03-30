@@ -12,25 +12,39 @@ import { Parametro } from "./Parametro";
 
 @Entity({ name: "estacao" })
 export class Estacao {
-  @PrimaryGeneratedColumn()
+  @PrimaryGeneratedColumn({
+    type: "int",
+  })
   estacao_id!: number;
 
-  @Column()
+  @Column({
+    type: "varchar",
+  })
   nome!: string;
 
-  @Column()
+  @Column({
+    type: "varchar",
+  })
   uid!: string;
 
-  @Column()
+  @Column({
+    type: "varchar",
+  })
   UTC!: string;
 
-  @Column()
+  @Column({
+    type: "float",
+  })
   lati!: number;
 
-  @Column()
+  @Column({
+    type: "float",
+  })
   long!: number;
 
-  @Column()
+  @Column({
+    type: "bigint",
+  })
   unixtime!: number;
 
   @ManyToMany(() => Parametro, (parametro) => parametro.estacoes)
