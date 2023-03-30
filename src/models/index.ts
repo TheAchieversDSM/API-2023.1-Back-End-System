@@ -5,7 +5,7 @@ import { Parametro } from "./Parametro";
 import { TipoParametro } from "./TipoParametro";
 import { Report } from "./Report";
 import { Medida } from "./Medida";
-import { UnidadeMedida } from "./UnidadeMedida";
+import { UnidadeMedida } from "./unidadeMedida";
 export {
   Alerta,
   Estacao,

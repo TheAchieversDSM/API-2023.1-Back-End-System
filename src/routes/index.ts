@@ -7,6 +7,7 @@ import parametro from "./parametro";
 import report from "./report";
 import medida from "./medida";
 import unidadeMedida from "./unidadeMedida";
+import tipoParametro from "./tipoParametro";
 
 const router = Router();
 
@@ -17,5 +18,6 @@ router.use("/parametro", parametro);
 router.use("/report", report);
 router.use("/medida", medida)
 router.use("/unidadeMedida", unidadeMedida)
+router.use("/tipoParametro", tipoParametro);
 
 export default router;

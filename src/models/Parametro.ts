@@ -11,7 +11,7 @@ import {
 import { Estacao } from "./Estacao";
 import { Medida } from "./Medida";
 import { TipoParametro } from "./TipoParametro";
-import { UnidadeMedida } from "./UnidadeMedida";
+import { UnidadeMedida } from "./unidadeMedida";
 
 @Entity({ name: "parametro" })
 export class Parametro {
