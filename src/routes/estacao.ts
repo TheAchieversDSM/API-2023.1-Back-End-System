@@ -10,5 +10,9 @@ estacao.get(
   "/pegarEstacoesRelacoes/:id",
   EstacaoController.pegarEstacoesRelacoes
 );
+estacao.get(
+  "/pegarMedidaEstacaoParametro/:idEstacao",
+  EstacaoController.getEstacaoParametro
+);
 
 export default estacao;
