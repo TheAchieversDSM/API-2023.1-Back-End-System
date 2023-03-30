@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import { DataBaseSource } from "../config/database";
-import { UnidadeMedida } from "../models/UnidadeMedida";
+import { UnidadeMedida } from "../models";
 
 const unidadeMedidaRepositorio = DataBaseSource.getRepository(UnidadeMedida);
 

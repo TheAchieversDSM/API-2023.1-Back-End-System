@@ -94,11 +94,11 @@ export const generate = async () => {
       .values([
         {
           valorMedido: "10",
-          unixtime: 10,
+          unixtime: 1617062877,
         },
         {
           valorMedido: "20",
-          unixtime: 20,
+          unixtime: 1617062877,
         },
       ])
       .execute();
@@ -134,7 +134,7 @@ export const generate = async () => {
           UTC: "UTC-3",
           lati: 10,
           long: 10,
-          unixtime: 10,
+          unixtime: 1617062877,
         },
         {
           nome: "Estação 2",
@@ -142,7 +142,7 @@ export const generate = async () => {
           UTC: "UTC-3",
           lati: 15,
           long: 10,
-          unixtime: 1454,
+          unixtime: 1617062877,
         },
       ])
       .execute();
@@ -153,7 +153,7 @@ export const generate = async () => {
       .into(Report)
       .values([
         {
-          unixtime: 123,
+          unixtime: 1617062877,
           nivel: 1,
           alerta: () => "1",
         },

@@ -1,20 +1,17 @@
 import { Request, Response, NextFunction } from "express";
+import { FindOperator } from "typeorm";
 import { DataBaseSource } from "../config/database";
-import { Estacao } from "../models/index";
+import { Estacao, Medida } from "../models/index";
 
 const estacaoRepositorio = DataBaseSource.getRepository(Estacao);
+const medidaRepositorio = DataBaseSource.getRepository(Medida);
 
 class EstacaoController {
   public async postEstacao(req: Request, res: Response, next: NextFunction) {
-    const {
-      nome_estacao,
-      latitude,
-      longitude,
-      utc,
-      uid,
-      parametroParametroId,
-    } = req.body;
+    const { nome_estacao, latitude, longitude, utc, uid, parametros } =
+      req.body;
     try {
+      console.log(parametros);
       const create_estacao = estacaoRepositorio.create({
         lati: latitude,
         long: longitude,
@@ -27,7 +24,11 @@ class EstacaoController {
       await DataBaseSource.createQueryBuilder()
         .relation(Estacao, "parametros")
         .of(create_estacao.estacao_id)
-        .add(parametroParametroId);
+        .add(
+          parametros.map(
+            (ids: { parametroParametroId: number }) => ids.parametroParametroId
+          )
+        );
       return res.status(201).json({
         ok: `Cadastro do '${create_estacao.estacao_id}' feito com sucesso`,
       });
@@ -40,7 +41,7 @@ class EstacaoController {
     try {
       const getById = await estacaoRepositorio
         .createQueryBuilder("estacao")
-        .where("estacao.id = :id", { id: id })
+        .where("estacao.estacao_id = :id", { id: id })
         .getOne();
       res.json(getById);
     } catch (error) {
@@ -73,6 +74,31 @@ class EstacaoController {
           parametros: {
             unidadeDeMedida: true,
             medidas: true,
+          },
+        },
+      });
+      res.json(select);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+  public async getEstacaoParametro(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) {
+    const { idEstacao } = req.params;
+    try {
+      const select = await medidaRepositorio.find({
+        where: {
+          estacao: {
+            estacao_id: Number(idEstacao),
+          },
+        },
+        relations: {
+          parametros: {
+            unidadeDeMedida: true,
+            tipo: true,
           },
         },
       });
