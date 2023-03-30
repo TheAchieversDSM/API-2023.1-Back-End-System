@@ -14,5 +14,5 @@ export {
   TipoParametro,
   Report,
   Medida,
-  UnidadeMedida
+  UnidadeMedida,
 };

@@ -1,14 +1,18 @@
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { Parametro } from "./Parametro";
 
-@Entity({name: "unidade_medida"})
-export class UnidadeMedida{
-    @PrimaryGeneratedColumn()
-    unidade_id!: number;
+@Entity({ name: "unidade_medida" })
+export class UnidadeMedida {
+  @PrimaryGeneratedColumn({
+    type: "int",
+  })
+  unidade_id!: number;
 
-    @Column()
-    nome!: string;
+  @Column({
+    type: "varchar",
+  })
+  nome!: string;
 
-    @OneToMany(() => Parametro, (parametro) => parametro.unidadeDeMedida)
-    parametro!: Parametro;
+  @OneToMany(() => Parametro, (parametro) => parametro.unidadeDeMedida)
+  parametro!: Parametro;
 }
