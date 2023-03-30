@@ -107,25 +107,5 @@ class EstacaoController {
       console.log(error);
     }
   }
-  public async Teste(req: Request, res: Response, next: NextFunction) {
-    const { idEstacao } = req.params;
-    try {
-      const getAllParametro = await estacaoRepositorio.find({
-        where: {
-          parametros: {
-            medidas: {
-              estacao: {
-                estacao_id: Number(idEstacao)
-              }
-            }
-          }
-        },
-      });
-      console.log("Teste");
-      res.json(getAllParametro);
-    } catch (error) {
-      res.json(error);
-    }
-  }
 }
 export default new EstacaoController();

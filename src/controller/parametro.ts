@@ -76,7 +76,7 @@ class ParametroController {
       res.json(error);
     }
   }
-  public async Teste(req: Request, res: Response, next: NextFunction) {
+  public async GetMedidaParametroPorEstacao(req: Request, res: Response, next: NextFunction) {
     const { id } = req.params;
     try {
       const getAllParametro = await parametroRepositorio.find({
