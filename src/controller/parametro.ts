@@ -88,7 +88,9 @@ class ParametroController {
           },
         },
         relations: {
-          medidas: true,   
+          medidas: true,
+          tipo: true,
+          unidadeDeMedida: true,
         },
       });
       console.log("Teste");

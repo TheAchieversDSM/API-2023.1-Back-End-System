@@ -14,5 +14,9 @@ estacao.get(
   "/pegarMedidaEstacaoParametro/:idEstacao",
   EstacaoController.getEstacaoParametro
 );
+estacao.get(
+  "/teste/:idEstacao",
+  EstacaoController.Teste
+);
 
 export default estacao;
