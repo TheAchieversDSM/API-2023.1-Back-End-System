@@ -52,6 +52,10 @@ class EstacaoController {
     try {
       const getAllEstacao = await estacaoRepositorio
         .createQueryBuilder("estacao")
+        .select(["estacao", "parametro", "tipo", "unidadeMedida"])
+        .leftJoin("estacao.parametros", "parametro")
+        .leftJoin("parametro.tipo", "tipo")
+        .leftJoin("parametro.unidadeDeMedida", "unidadeMedida")
         .getMany();
       res.json(getAllEstacao);
     } catch (error) {
