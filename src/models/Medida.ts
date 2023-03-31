@@ -2,9 +2,6 @@ import {
   Entity,
   PrimaryGeneratedColumn,
   Column,
-  OneToOne,
-  JoinColumn,
-  OneToMany,
   ManyToOne,
   ManyToMany,
 } from "typeorm";
@@ -14,13 +11,19 @@ import { Parametro } from "./Parametro";
 
 @Entity({ name: "medida" })
 export class Medida {
-  @PrimaryGeneratedColumn()
-  id!: number;
+  @PrimaryGeneratedColumn({
+    type: "int",
+  })
+  medida_id!: number;
 
-  @Column()
+  @Column({
+    type: "varchar",
+  })
   valorMedido!: string;
 
-  @Column()
+  @Column({
+    type: "bigint",
+  })
   unixtime!: number;
 
   @ManyToMany(() => Alerta, (alertas) => alertas.medida)

@@ -29,7 +29,7 @@ class AlertaController {
     try {
       const getById = await alertaRepository
         .createQueryBuilder("alerta")
-        .where("alerta.id = :id", { id: id })
+        .where("alerta.alerta_id = :id", { id: id })
         .getOne();
       res.json(getById);
     } catch (error) {
@@ -54,13 +54,19 @@ class AlertaController {
   ) {
     const { id } = req.params;
     try {
-      const select = await alertaRepository
-        .createQueryBuilder("alerta")
-        .select(["alerta", "reports", "alerta_medida"])
-        .leftJoin("alerta.reports", "reports")
-        .leftJoin("alerta.medida", "alerta_medida")
-        .where("alerta.id = :id", { id: id })
-        .execute();
+      const select = await alertaRepository.findOne({
+        where: {
+          alerta_id: Number(id),
+        },
+        relations: {
+          medida: {
+            parametros: {
+              tipo: true,
+            },
+          },
+          reports: true,
+        },
+      });
       res.json(select);
     } catch (error) {
       console.log(error);

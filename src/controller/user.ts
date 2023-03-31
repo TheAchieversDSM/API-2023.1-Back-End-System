@@ -38,7 +38,7 @@ class UserControler {
       const { id } = req.params;
       const getUserById = await userRepositorio
         .createQueryBuilder("user")
-        .where("user.id = :id", { id: id })
+        .where("user.user_id = :id", { id: id })
         .getOne();
       res.json(getUserById);
     } catch (error) {

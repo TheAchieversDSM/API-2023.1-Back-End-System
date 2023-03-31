@@ -11,30 +11,40 @@ import {
 import { Estacao } from "./Estacao";
 import { Medida } from "./Medida";
 import { TipoParametro } from "./TipoParametro";
-import { UnidadeMedida } from "./UnidadeMedida";
+import { UnidadeMedida } from "./unidadeMedida";
 
 @Entity({ name: "parametro" })
 export class Parametro {
-  @PrimaryGeneratedColumn()
-  id!: number;
+  @PrimaryGeneratedColumn({
+    type: "int",
+  })
+  parametro_id!: number;
 
-  @Column()
+  @Column({
+    type: "varchar",
+  })
   nome!: string;
 
-  @Column()
+  @Column({
+    type: "varchar",
+  })
   formula!: string;
 
-  @Column()
+  @Column({
+    type: "float",
+  })
   fator!: number;
 
-  @Column()
+  @Column({
+    type: "float",
+  })
   offset!: number;
 
-  @OneToOne(() => TipoParametro, (tipo) => tipo.parametro)
+  @ManyToOne(() => TipoParametro, (tipo) => tipo.parametro)
   @JoinColumn({
     name: "fk_tipo_id",
   })
-  tipo!: TipoParametro;
+  tipo!: TipoParametro[];
 
   @OneToMany(() => Medida, (medidas) => medidas.parametros)
   medidas!: Medida;
@@ -42,7 +52,10 @@ export class Parametro {
   @ManyToMany(() => Estacao, (estacao) => estacao.parametros)
   estacoes!: Estacao[];
 
-  @ManyToOne(() => UnidadeMedida, (unidadeDeMedida) => unidadeDeMedida.parametro)
+  @ManyToOne(
+    () => UnidadeMedida,
+    (unidadeDeMedida) => unidadeDeMedida.parametro
+  )
   @JoinColumn({
     name: "fk_unidadeDeMedida_id",
   })

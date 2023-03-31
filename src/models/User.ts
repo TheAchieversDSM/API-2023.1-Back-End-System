@@ -9,16 +9,22 @@ import * as bcrypt from "bcrypt";
 
 @Entity({ name: "user" })
 export class User {
-  @PrimaryGeneratedColumn()
-  id!: number;
+  @PrimaryGeneratedColumn({
+    type: "int",
+  })
+  user_id!: number;
 
-  @Column()
+  @Column({
+    type: "varchar",
+  })
   nome!: string;
 
-  @Column()
+  @Column({
+    type: "varchar",
+  })
   email!: string;
 
-  @Column({select: false})
+  @Column({ select: false, type: "varchar" })
   senha!: string;
 
   @BeforeInsert()

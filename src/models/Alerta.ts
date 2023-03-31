@@ -14,24 +14,34 @@ import { Report } from "./Report";
 
 @Entity({ name: "alerta" })
 export class Alerta {
-  @PrimaryGeneratedColumn()
-  id!: number;
+  @PrimaryGeneratedColumn({
+    type: "int",
+  })
+  alerta_id!: number;
 
-  @Column()
+  @Column({
+    type: "varchar",
+  })
   nome!: string;
 
-  @Column()
+  @Column({
+    type: "float",
+  })
   valorMax!: number;
 
-  @Column()
+  @Column({
+    type: "float",
+  })
   valorMinimo!: number;
 
-  @Column()
+  @Column({
+    type: "int",
+  })
   nivel!: number;
 
   @ManyToMany(() => Medida, (medida) => medida.alertas)
   @JoinTable({
-    name: "alerta_medida"
+    name: "alerta_medida",
   })
   medida!: Medida[];
 

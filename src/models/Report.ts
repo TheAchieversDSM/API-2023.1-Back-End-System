@@ -9,13 +9,19 @@ import { Alerta } from "./Alerta";
 
 @Entity({ name: "report" })
 export class Report {
-  @PrimaryGeneratedColumn()
-  id!: number;
+  @PrimaryGeneratedColumn({
+    type: "int",
+  })
+  report_id!: number;
 
-  @Column()
+  @Column({
+    type: "bigint",
+  })
   unixtime!: number;
 
-  @Column()
+  @Column({
+    type: "int",
+  })
   nivel!: number;
 
   @ManyToOne(() => Alerta, (alerta) => alerta.reports)
