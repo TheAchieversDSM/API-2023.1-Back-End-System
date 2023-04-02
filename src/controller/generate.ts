@@ -41,7 +41,32 @@ export const generate = async () => {
     await TipoUnidadeMedida.createQueryBuilder()
       .insert()
       .into(UnidadeMedida)
-      .values([{ nome: "m/s" }])
+      .values([{ nome: "m/s" },
+      { nome: "km/h" },
+      { nome: "°C" },
+      { nome: "°F" },
+      { nome: "K" },
+      { nome: "mm/h" },
+      { nome: "V" },
+      { nome: "g/m³" },
+      { nome: "%" },
+      { nome: "Pa" },
+      { nome: "N/m²" },
+      { nome: "mb" },
+      { nome: "mmHg" },
+      { nome: "N" },
+      { nome: "NE" },
+      { nome: "E" },
+      { nome: "SE" },
+      { nome: "S" },
+      { nome: "SW" },
+      { nome: "W" },
+      { nome: "NW" },
+      { nome: "mm" },
+      { nome: "L/m²" },
+      { nome: "J/m²" },
+      { nome: "Wh/m²" },
+        ])
       .execute();
 
     await parametroRepository
@@ -50,25 +75,25 @@ export const generate = async () => {
       .into(Parametro)
       .values([
         {
-          nome: "Parâmetro 1",
+          nome: "Velocidade do Vento",
           fator: 8,
           offset: 5,
           formula: "1 + 1 = 2",
-          unidadeDeMedida: () => "1",
+          unidadeDeMedida: () => "2",
         },
         {
-          nome: "Parâmetro 2",
+          nome: "Temperatura",
           fator: 10,
           offset: 10,
           formula: "2 + 2 = 4",
-          unidadeDeMedida: () => "1",
+          unidadeDeMedida: () => "3",
         },
         {
-          nome: "Parâmetro 3",
+          nome: "Pluviosidade",	
           fator: 10,
           offset: 10,
           formula: "10",
-          unidadeDeMedida: () => "1",
+          unidadeDeMedida: () => "22",
         },
       ])
       .execute();
@@ -79,10 +104,31 @@ export const generate = async () => {
       .into(TipoParametro)
       .values([
         {
-          nome: "Chuva",
+          nome: "Temperatura",
         },
         {
-          nome: "Vento",
+          nome: "Velocidade do Vento",
+        },
+        {
+            nome: "Direção do Vento",
+        },
+        {
+            nome: "Pluviômetro",
+        },
+        {
+            nome: "Bateria",
+        },
+        {
+            nome: "Umidade Relativa do Ar",
+        },
+        {
+            nome: "Pressão Atmosférica",
+        },
+        {
+            nome: "Precipitação (chuva)",
+        },
+        {
+            nome: "Radiação Solar Global",
         },
       ])
       .execute();
@@ -166,7 +212,7 @@ export const generate = async () => {
       .createQueryBuilder()
       .update(Parametro)
       .set({
-        tipo: () => "1",
+        tipo: () => "2",
       })
       .where("parametro_id = :id", {
         id: 1,
@@ -183,6 +229,20 @@ export const generate = async () => {
         },
       ])
       .execute();
+
+    await DataBaseSource.createQueryBuilder()
+    .insert()
+    .into("estacao_parametro")
+    .values([{ parametroParametroId: 1, estacaoEstacaoId: 1 },
+        { parametroParametroId: 2, estacaoEstacaoId: 1 },
+        { parametroParametroId: 3, estacaoEstacaoId: 1 },
+        { parametroParametroId: 3, estacaoEstacaoId: 2 },
+        { parametroParametroId: 4, estacaoEstacaoId: 2 },
+        { parametroParametroId: 1, estacaoEstacaoId: 2 },
+        { parametroParametroId: 1, estacaoEstacaoId: 3 },
+        { parametroParametroId: 2, estacaoEstacaoId: 3 },
+        { parametroParametroId: 3, estacaoEstacaoId: 3 },])
+    .execute();
 
     medidaRepository
       .createQueryBuilder()
