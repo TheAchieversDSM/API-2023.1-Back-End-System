@@ -200,7 +200,6 @@ export const generate = async () => {
       .values([
         {
           unixtime: 1617062877,
-          nivel: 1,
           alerta: () => "1",
         },
       ])
