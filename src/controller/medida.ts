@@ -29,6 +29,31 @@ class MedidaController{
             res.json(error);
         }
     }
+
+	public async atualizarAtividadeMedida( req: Request, res: Response, next: NextFunction ) {
+		const { ativo } = req.body;
+		const { id } = req.params;
+
+		try {
+			await medidaRepository
+				.createQueryBuilder("medida")
+				.update(Medida)
+				.set({
+					ativo: ativo
+				})
+				.where("medida.medida_id = :id", { id: id })
+				.execute()
+			return res
+				.status(201)
+				.json({
+					ok: `Estado atualizado`
+				});
+			
+		} catch (error){
+			return res.status(406).json({ error: error });
+		}
+	}
+
 }
 
 export default new MedidaController();

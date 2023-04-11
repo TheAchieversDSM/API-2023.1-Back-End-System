@@ -26,6 +26,12 @@ export class Medida {
   })
   unixtime!: number;
 
+  @Column({
+    type: "int"
+  })
+  ativo!: number;
+
+
   @ManyToMany(() => Alerta, (alertas) => alertas.medida)
   alertas!: Alerta[];
 
