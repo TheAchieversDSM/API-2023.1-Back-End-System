@@ -19,6 +19,11 @@ export class TipoParametro {
   })
   nome!: string;
 
+  @Column({
+    type: "int"
+  })
+  ativo!: number;
+
   @OneToMany(() => Parametro, (parametro) => parametro.tipo)
   parametro!: Parametro;
 }

@@ -13,6 +13,11 @@ export class UnidadeMedida {
   })
   nome!: string;
 
+  @Column({
+    type: "int"
+  })
+  ativo!: number;
+
   @OneToMany(() => Parametro, (parametro) => parametro.unidadeDeMedida)
   parametro!: Parametro;
 }
