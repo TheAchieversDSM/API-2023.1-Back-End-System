@@ -14,5 +14,7 @@ estacao.get(
   "/pegarMedidaEstacaoParametro/:idEstacao",
   EstacaoController.getEstacaoParametro
 );
+estacao.put("/atualizarEstado/:id", EstacaoController.atualizarAtividadeEstacao);
+
 
 export default estacao;

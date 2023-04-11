@@ -40,6 +40,11 @@ export class Alerta {
   })
   nivel!: number;
 
+  @Column({
+    type: "int"
+  })
+  ativo!: number;
+
   @ManyToMany(() => Medida, (medida) => medida.alertas)
   @JoinTable({
     name: "alerta_medida",
