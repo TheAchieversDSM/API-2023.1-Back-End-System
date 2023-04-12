@@ -12,7 +12,6 @@ class UnidadeMedidaController {
             const create_unidadeMedida = unidadeMedidaRepositorio.create({
                 nome: nome,
                 parametro: parametro,
-                ativo: 1
             });
             await unidadeMedidaRepositorio.save(create_unidadeMedida);
             return res
@@ -47,32 +46,6 @@ class UnidadeMedidaController {
             res.json(error);
         }
     }
-
-    
-	public async atualizarAtividadeUnidadeMedida( req: Request, res: Response, next: NextFunction ) {
-		const { ativo } = req.body;
-		const { id } = req.params;
-
-		try {
-			await unidadeMedidaRepositorio
-                .createQueryBuilder("unidade_medida")
-				.update(UnidadeMedida)
-				.set({
-					ativo: ativo
-				})
-				.where("unidade_medida.unidade_id = :id", { id: id })
-				.execute()
-			return res
-				.status(201)
-				.json({
-					ok: `Estado atualizado`
-				});
-			
-		} catch (error){
-			return res.status(406).json({ error: error });
-		}
-	}
-
 
 }
 export default new UnidadeMedidaController;

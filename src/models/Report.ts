@@ -24,11 +24,6 @@ export class Report {
   })
   msg!: string;
 
-  @Column({
-    type: "int"
-  })
-  ativo!: number;
-
   @ManyToOne(() => Alerta, (alerta) => alerta.reports)
   @JoinColumn({
     name: "fk_alerta_id",

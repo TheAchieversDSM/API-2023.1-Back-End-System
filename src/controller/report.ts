@@ -45,33 +45,5 @@ class ReportController {
       res.json(error);
     }
   }
-
-  
-	public async atualizarAtividadeReport( req: Request, res: Response, next: NextFunction ) {
-		const { ativo } = req.body;
-		const { id } = req.params;
-
-		try {
-			await reportRepository
-				.createQueryBuilder("report")
-				.update(Report)
-				.set({
-					ativo: ativo
-				})
-				.where("report.report_id = :id", { id: id })
-				.execute()
-			return res
-				.status(201)
-				.json({
-					ok: `Estado atualizado`
-				});
-			
-		} catch (error){
-			return res.status(406).json({ error: error });
-		}
-	}
-
-
-
 }
 export default new ReportController();

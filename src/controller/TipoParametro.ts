@@ -12,8 +12,7 @@ class TipoParametroController {
         try {
             const create_tipoParametro = tipoParametroRepositorio.create({
                 nome: nome,
-                parametro: parametro,
-                ativo: 1
+                parametro: parametro
             });
             await tipoParametroRepositorio.save(create_tipoParametro);
             return res
@@ -50,33 +49,6 @@ class TipoParametroController {
             res.json(error);
         }
     }
-
-
-	public async atualizarAtividadeTipoParametro( req: Request, res: Response, next: NextFunction ) {
-		const { ativo } = req.body;
-		const { id } = req.params;
-
-		try {
-			await tipoParametroRepositorio
-				.createQueryBuilder("tipo_parametro")
-				.update(TipoParametro)
-				.set({
-					ativo: ativo
-				})
-				.where("tipo_parametro.tipo_id = :id", { id: id })
-				.execute()
-			return res
-				.status(201)
-				.json({
-					ok: `Estado atualizado`
-				});
-			
-		} catch (error){
-			return res.status(406).json({ error: error });
-		}
-	}
-
-
 }
 
 export default new TipoParametroController;
