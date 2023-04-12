@@ -111,5 +111,34 @@ class EstacaoController {
       console.log(error);
     }
   }
+  public async atualizarEstacaoById(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) {
+    const { id } = req.params;
+    const { nome_estacao, latitude, longitude, utc} = req.body;
+    console.log("Boa noite");
+
+    try {
+      await estacaoRepositorio
+        .createQueryBuilder("estacao")
+        .update(Estacao)
+        .set({
+          lati: latitude,
+          long: longitude,
+          nome: nome_estacao,
+          UTC: utc,
+        })
+        .where("estacao.estacao_id = :id", { id: id })
+        .execute();
+      return res.status(201).json({
+        ok: `Estação '${nome_estacao}' atualizada`,
+      });
+    } catch (error) {
+      res.json(error);
+    }
+  }
 }
+
 export default new EstacaoController();
