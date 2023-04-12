@@ -64,6 +64,43 @@ class EstacaoController {
 		}
 	}
 
+	public async getAllEstacaoAtivos(req: Request, res: Response, next: NextFunction) {
+		const { id } = req.params;
+
+		try {
+			const getAllAtivos = await estacaoRepositorio
+				.createQueryBuilder("estacao")
+				.where("estacao.ativo = :ativo", { ativo: 1 })
+				.select(["estacao", "parametro", "tipo", "unidadeMedida"])
+				.leftJoin("estacao.parametros", "parametro")
+				.leftJoin("parametro.tipo", "tipo")
+				.leftJoin("parametro.unidadeDeMedida", "unidadeMedida")
+				.getMany();
+			res.json(getAllAtivos);
+		} catch (error) {
+			res.json(error);
+		}
+	}
+
+	public async getAllEstacaoInativos(req: Request, res: Response, next: NextFunction) {
+		const { id } = req.params;
+
+		try {
+			const getAllInativos = await estacaoRepositorio
+				.createQueryBuilder("estacao")
+				.where("estacao.ativo = :ativo", { ativo: 0 })
+				.select(["estacao", "parametro", "tipo", "unidadeMedida"])
+				.leftJoin("estacao.parametros", "parametro")
+				.leftJoin("parametro.tipo", "tipo")
+				.leftJoin("parametro.unidadeDeMedida", "unidadeMedida")
+				.getMany();
+			res.json(getAllInativos);
+		} catch (error) {
+			res.json(error);
+		}
+	}
+
+
 	public async pegarEstacoesRelacoes(
 		req: Request,
 		res: Response,
@@ -113,7 +150,7 @@ class EstacaoController {
 		}
 	}
 
-	public async atualizarAtividadeEstacao( req: Request, res: Response, next: NextFunction ) {
+	public async atualizarAtividadeEstacao(req: Request, res: Response, next: NextFunction) {
 		const { ativo } = req.body;
 		const { id } = req.params;
 
@@ -131,8 +168,8 @@ class EstacaoController {
 				.json({
 					ok: `Estado atualizado`
 				});
-			
-		} catch (error){
+
+		} catch (error) {
 			return res.status(406).json({ error: error });
 		}
 	}

@@ -48,6 +48,36 @@ class AlertaController {
       res.json(error);
     }
   }
+
+  public async getAllAlertasAtivos(req: Request, res: Response, next: NextFunction) {
+    const { id } = req.params;
+
+    try {
+      const getAllAtivos = await alertaRepository
+        .createQueryBuilder("alerta")
+        .where("alerta.ativo = :ativo", {ativo: 1})
+        .getMany();
+      res.json(getAllAtivos);
+    } catch (error) {
+      res.json(error);
+    }
+  }
+
+  public async getAllAlertasInativos(req: Request, res: Response, next: NextFunction) {
+    const { id } = req.params;
+
+    try {
+      const getAllInativos = await alertaRepository
+      .createQueryBuilder("alerta")
+      .where("alerta.ativo = :ativo", {ativo: 0})
+      .getMany();
+      res.json(getAllInativos);
+    } catch (error) {
+      res.json(error);
+    }
+  }
+
+
   public async GetAllReportsWithAlertId(
     req: Request,
     res: Response,
