@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import { DataBaseSource } from "../config/database";
 import { User } from "../models/index";
+import user from "../routes/user";
 
 const userRepositorio = DataBaseSource.getRepository(User);
 
@@ -33,6 +34,28 @@ class UserControler {
     }
     return res.json(usuario);
   }
+
+  public async deleteUserById(req: Request, res: Response, next: NextFunction) {
+    const { id } = req.body;
+    try {
+      await userRepositorio
+        .createQueryBuilder("user")
+        .delete()
+        .from(User)
+        .where("user.user_id = :id", { id: id })
+        .execute();
+
+      return res
+        .status(201)
+        .json({
+          ok: `Usuário de ID '${id}' deletado`
+        })
+    } catch (error) {
+      return res.status(406).json({ error: error });
+
+    }
+  }
+
   public async getUserById(req: Request, res: Response, next: NextFunction) {
     try {
       const { id } = req.params;
