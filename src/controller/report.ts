@@ -1,7 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import { DataBaseSource } from "../config/database";
 import { Report } from "../models/index";
-import { log } from "console";
 
 const reportRepository = DataBaseSource.getRepository(Report);
 
@@ -28,25 +27,25 @@ class ReportController {
     }
   }
 
-  public async getReportsByParameter(req: Request, res: Response, next: NextFunction) {
-    const { parameter } = req.params;
+  public async getReportsByStationId(req: Request, res: Response, next: NextFunction) {
+    const { id } = req.params;
     console.log("teste");
-    
     try {
-      const getReportsByParameter = await reportRepository
+      const getReportsByStationId = await reportRepository
         .createQueryBuilder("report")
         .select([
           "al",
           "rp",
-          "md"
+          "md",
+          "es"
         ])
         .from("report", "rp")
         .leftJoin("rp.alerta", "al")
         .leftJoin("al.medida", "md")
-        .leftJoin("al.parametro", "pa")
-        .where("md.estacao = :parameter", { parameter: parameter })
+        .leftJoin("md.estacao", "es")
+        .where("es.estacao_id = :id", { id: id })
         .getMany();
-      res.json(getReportsByParameter);
+      res.json(getReportsByStationId);
     } catch (error) {
       res.json(error);
     }

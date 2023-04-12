@@ -5,7 +5,7 @@ const report = Router();
 
 report.get("/pegarReports/", ReportController.getAllReports);
 report.get("/pegarReportPorId/:id", ReportController.getReportById);
-report.get('/pegarReportPeloParametro/:parameter', ReportController.getReportsByParameter);
+report.get('/pegarReportPelaEstacao/:id', ReportController.getReportsByStationId);
 
 
 export default report;
