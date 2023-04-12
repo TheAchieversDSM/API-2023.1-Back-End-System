@@ -180,7 +180,6 @@ export const generate = async () => {
           UTC: "UTC-3",
           lati: 10,
           long: 10,
-          ativo: 1,
           unixtime: 1617062877,
         },
         {
@@ -189,7 +188,6 @@ export const generate = async () => {
           UTC: "UTC-3",
           lati: 15,
           long: 10,
-          ativo: 1,
           unixtime: 1617062877, 
         },
       ])

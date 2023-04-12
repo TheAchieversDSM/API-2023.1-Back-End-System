@@ -101,30 +101,65 @@ class ParametroController {
     }
   }
 
+  public async atualizarParametro(req: Request, res: Response, next: NextFunction) {
+    const {
+      tipo_parametro,
+      nome_parametro,
+      unidadeDeMedida_parametro,
+      fator_parametro,
+      offset_parametro,
+      formula_parametro,
+    } = req.body;
+    const { id } = req.params;
 
-	public async atualizarAtividadeParametro( req: Request, res: Response, next: NextFunction ) {
-		const { ativo } = req.body;
-		const { id } = req.params;
+    try {
+      await parametroRepositorio
+        .createQueryBuilder("parametro")
+        .update(Parametro)
+        .set({
+          tipo:tipo_parametro,
+          nome: nome_parametro,
+          unidadeDeMedida:unidadeDeMedida_parametro,
+          fator: fator_parametro,
+          offset: offset_parametro,
+          formula: formula_parametro,
+        })
+        .where("parametro.parametro_id = :id", { id: id })
+        .execute();
 
-		try {
-			await parametroRepositorio
-				.createQueryBuilder("parametro")
-				.update(Parametro)
-				.set({
-					ativo: ativo
-				})
-				.where("parametro.parametro_id = :id", { id: id })
-				.execute()
-			return res
-				.status(201)
-				.json({
-					ok: `Estado atualizado`
-				});
-			
-		} catch (error){
-			return res.status(406).json({ error: error });
-		}
-	}
+      return res
+        .status(201)
+        .json({
+          ok: `Parametro '${nome_parametro}' atualizado`
+        })
+    } catch (error) {
+      return res.status(406).json({ error: error });
+    }
+  }
+
+  public async atualizarAtividadeParametro(req: Request, res: Response, next: NextFunction) {
+    const { ativo } = req.body;
+    const { id } = req.params;
+
+    try {
+      await parametroRepositorio
+        .createQueryBuilder("parametro")
+        .update(Parametro)
+        .set({
+          ativo: ativo
+        })
+        .where("parametro.parametro_id = :id", { id: id })
+        .execute()
+      return res
+        .status(201)
+        .json({
+          ok: `Estado atualizado`
+        });
+
+    } catch (error) {
+      return res.status(406).json({ error: error });
+    }
+  }
 
 
 }
