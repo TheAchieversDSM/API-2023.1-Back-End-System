@@ -11,4 +11,6 @@ alerta.get(
   AlertaController.GetAllReportsWithAlertId
 );
 
+alerta.put("/atualizarAlertaPorId/:id", AlertaController.atualizarAlertaById);
+
 export default alerta;

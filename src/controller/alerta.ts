@@ -72,5 +72,37 @@ class AlertaController {
       console.log(error);
     }
   }
+
+  public async atualizarAlertaById(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) {
+    const { id } = req.params;
+    const { nome, valorMax, valorMinimo, nivel } = req.body;
+    try {
+      const update = await alertaRepository
+        .createQueryBuilder()
+        .update(Alerta)
+        .set({
+          nome: nome,
+          valorMax: valorMax,
+          valorMinimo: valorMinimo,
+          nivel: nivel,
+        })
+        .where("alerta_id = :id", { id: id })
+        .execute();
+        return res.status(201).json({ok: `Alerta '${nome}' atualizado`,
+        });
+    } catch (error) {
+      res.json(error);
+    }
+  }
+
+
+
+
+
+
 }
 export default new AlertaController();
