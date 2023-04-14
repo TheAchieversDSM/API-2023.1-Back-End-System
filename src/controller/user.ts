@@ -78,5 +78,32 @@ class UserControler {
       res.json({ err: error });
     }
   }
+
+  public async atualizarUsuario(req: Request, res: Response, next: NextFunction){
+    const { nome, email, senha } = req.body;
+    const { id } = req.params;
+
+    try{
+      await userRepositorio
+        .createQueryBuilder("user")
+        .update(User)
+        .set({
+          nome: nome,
+          email: email,
+          senha: senha
+        })
+        .where("user.user_id = :id", { id: id })
+        .execute();
+
+        return res
+          .status(201)
+          .json({
+            ok: `Usuário '${nome}' atualizado`
+          })
+
+    } catch(error){
+      return res.status(406).json({ error: error });
+    }
+  }
 }
 export default new UserControler();
