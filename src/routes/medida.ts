@@ -6,4 +6,5 @@ const medida = Router();
 medida.get("/pegarMedidas/", MedidaController.getAllMedidas);
 medida.get("/pegarMedidasPorId/:id", MedidaController.getMedidaById);
 
+
 export default medida; 

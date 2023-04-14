@@ -29,6 +29,9 @@ class MedidaController{
             res.json(error);
         }
     }
+
+    
 }
+
 
 export default new MedidaController();

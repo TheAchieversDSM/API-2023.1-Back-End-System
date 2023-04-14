@@ -45,6 +45,5 @@ class ReportController {
       res.json(error);
     }
   }
-
 }
 export default new ReportController();
