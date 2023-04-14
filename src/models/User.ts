@@ -24,7 +24,7 @@ export class User {
   })
   email!: string;
 
-  @Column({ select: false, type: "varchar" })
+  @Column({ type: "varchar" })
   senha!: string;
 
   @BeforeInsert()
