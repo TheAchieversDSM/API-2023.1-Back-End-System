@@ -13,4 +13,6 @@ alerta.get(
 );
 alerta.put("/atualizarEstado/:id", AlertaController.atualizarAtividadeAlerta);
 
+alerta.put("/atualizarAlertaPorId/:id", AlertaController.atualizarAlertaById);
+
 export default alerta;

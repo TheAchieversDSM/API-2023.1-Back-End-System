@@ -17,4 +17,6 @@ estacao.get(
 estacao.put("/atualizarEstado/:id", EstacaoController.atualizarAtividadeEstacao);
 
 
+estacao.put("/atualizarEstacao/:id", EstacaoController.atualizarEstacaoById);
+
 export default estacao;
