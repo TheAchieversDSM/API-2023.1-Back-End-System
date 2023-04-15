@@ -12,9 +12,9 @@ class ReportController {
         .createQueryBuilder("report")
         .select(["al", "rp", "md"])
         .from("report", "rp")
-        .leftJoin("rp.alertas", "al")
-        .leftJoin("al.medidas", "md")
-        .where("report.report_id = :id", { id: id })
+        .leftJoin("rp.alerta", "al")
+        .leftJoin("al.medida", "md")
+        .where("rp.report_id = :id", { id: id })
         .getOne();
       res.json(getById);
     } catch (error) {
@@ -51,8 +51,8 @@ class ReportController {
         .createQueryBuilder("report")
         .select(["al", "rp", "md"])
         .from("report", "rp")
-        .leftJoin("rp.alertas", "al")
-        .leftJoin("al.medidas", "md")
+        .leftJoin("rp.alerta", "al")
+        .leftJoin("al.medida", "md")
         .getMany();
       res.json(getAllReports);
     } catch (error) {
