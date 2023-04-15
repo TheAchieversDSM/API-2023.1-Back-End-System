@@ -18,6 +18,7 @@ class EstacaoController {
         nome: nome_estacao,
         uid: uid,
         UTC: utc,
+        ativo: 1,
         unixtime: Math.round(new Date().getTime() / 1000),
       });
       await estacaoRepositorio.save(create_estacao);
@@ -63,6 +64,57 @@ class EstacaoController {
     }
   }
 
+  public async getEstacaoParametro(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) {
+    const { idEstacao } = req.params;
+    try {
+      const select = await medidaRepositorio.find({
+        where: {
+          estacao: {
+            estacao_id: Number(idEstacao),
+          },
+        },
+        relations: {
+          parametros: {
+            unidadeDeMedida: true,
+            tipo: true,
+            medidas: true,
+          },
+        },
+      });
+      res.json(select);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+  public async atualizarAtividadeEstacao(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) {
+    const { ativo } = req.body;
+    const { id } = req.params;
+
+    try {
+      await estacaoRepositorio
+        .createQueryBuilder("estacao")
+        .update(Estacao)
+        .set({
+          ativo: ativo,
+        })
+        .where("estacao.estacao_id = :id", { id: id })
+        .execute();
+      return res.status(201).json({
+        ok: `Estado atualizado`,
+      });
+    } catch (error) {
+      return res.status(406).json({ error: error });
+    }
+  }
+
   public async pegarEstacoesRelacoes(
     req: Request,
     res: Response,
@@ -86,38 +138,14 @@ class EstacaoController {
       console.log(error);
     }
   }
-  public async getEstacaoParametro(
-    req: Request,
-    res: Response,
-    next: NextFunction
-  ) {
-    const { idEstacao } = req.params;
-    try {
-      const select = await medidaRepositorio.find({
-        where: {
-          estacao: {
-            estacao_id: Number(idEstacao),
-          },
-        },
-        relations: {
-          parametros: {
-            unidadeDeMedida: true,
-            tipo: true,
-          },
-        },
-      });
-      res.json(select);
-    } catch (error) {
-      console.log(error);
-    }
-  }
+
   public async atualizarEstacaoById(
     req: Request,
     res: Response,
     next: NextFunction
   ) {
     const { id } = req.params;
-    const { nome_estacao, latitude, longitude, utc} = req.body;
+    const { nome_estacao, latitude, longitude, utc } = req.body;
     console.log("Boa noite");
 
     try {

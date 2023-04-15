@@ -41,6 +41,12 @@ export class Parametro {
   })
   offset!: number;
 
+  @Column({
+    type: "int"
+  })
+  ativo!: number;
+
+
   @ManyToOne(() => TipoParametro, (tipo) => tipo.parametro)
   @JoinColumn({
     name: "fk_tipo_id",

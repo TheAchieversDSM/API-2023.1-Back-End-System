@@ -49,7 +49,6 @@ class TipoParametroController {
             res.json(error);
         }
     }
-
 }
 
 export default new TipoParametroController;

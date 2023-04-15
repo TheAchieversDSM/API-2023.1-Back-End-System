@@ -22,6 +22,7 @@ class ParametroController {
         unidadeDeMedida: unidadeDeMedida_parametro,
         fator: fator_parametro,
         offset: offset_parametro,
+        ativo: 1,
         formula: formula_parametro,
       });
       await parametroRepositorio.save(create_parametro);
@@ -99,5 +100,32 @@ class ParametroController {
       res.json(error);
     }
   }
+
+
+	public async atualizarAtividadeParametro( req: Request, res: Response, next: NextFunction ) {
+		const { ativo } = req.body;
+		const { id } = req.params;
+
+		try {
+			await parametroRepositorio
+				.createQueryBuilder("parametro")
+				.update(Parametro)
+				.set({
+					ativo: ativo
+				})
+				.where("parametro.parametro_id = :id", { id: id })
+				.execute()
+			return res
+				.status(201)
+				.json({
+					ok: `Estado atualizado`
+				});
+			
+		} catch (error){
+			return res.status(406).json({ error: error });
+		}
+	}
+
+
 }
 export default new ParametroController();
