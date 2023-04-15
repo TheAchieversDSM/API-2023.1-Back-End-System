@@ -10,6 +10,8 @@ import {
   UnidadeMedida,
 } from "./../models/index";
 
+import * as bcrypt from "bcrypt";
+
 const alertaRepository = DataBaseSource.getRepository(Alerta);
 const estacaoRepository = DataBaseSource.getRepository(Estacao);
 const parametroRepository = DataBaseSource.getRepository(Parametro);
@@ -21,7 +23,7 @@ const TipoUnidadeMedida = DataBaseSource.getRepository(UnidadeMedida);
 
 export const generate = async () => {
   try {
-    console.log("Dados gerados com sucesso");
+    const passwordHash = await bcrypt.hash("secret", 8);
 
     // Criando dados
 
@@ -33,7 +35,7 @@ export const generate = async () => {
         {
           nome: "Usuario 1",
           email: "usuario1@theAchievers.com",
-          senha: "123",
+          senha: passwordHash,
         },
       ])
       .execute();
@@ -41,32 +43,33 @@ export const generate = async () => {
     await TipoUnidadeMedida.createQueryBuilder()
       .insert()
       .into(UnidadeMedida)
-      .values([{ nome: "m/s" },
-      { nome: "km/h" },
-      { nome: "°C" },
-      { nome: "°F" },
-      { nome: "K" },
-      { nome: "mm/h" },
-      { nome: "V" },
-      { nome: "g/m³" },
-      { nome: "%" },
-      { nome: "Pa" },
-      { nome: "N/m²" },
-      { nome: "mb" },
-      { nome: "mmHg" },
-      { nome: "N" },
-      { nome: "NE" },
-      { nome: "E" },
-      { nome: "SE" },
-      { nome: "S" },
-      { nome: "SW" },
-      { nome: "W" },
-      { nome: "NW" },
-      { nome: "mm" },
-      { nome: "L/m²" },
-      { nome: "J/m²" },
-      { nome: "Wh/m²" },
-        ])
+      .values([
+        { nome: "m/s" },
+        { nome: "km/h" },
+        { nome: "°C" },
+        { nome: "°F" },
+        { nome: "K" },
+        { nome: "mm/h" },
+        { nome: "V" },
+        { nome: "g/m³" },
+        { nome: "%" },
+        { nome: "Pa" },
+        { nome: "N/m²" },
+        { nome: "mb" },
+        { nome: "mmHg" },
+        { nome: "N" },
+        { nome: "NE" },
+        { nome: "E" },
+        { nome: "SE" },
+        { nome: "S" },
+        { nome: "SW" },
+        { nome: "W" },
+        { nome: "NW" },
+        { nome: "mm" },
+        { nome: "L/m²" },
+        { nome: "J/m²" },
+        { nome: "Wh/m²" },
+      ])
       .execute();
 
     await parametroRepository
@@ -89,7 +92,7 @@ export const generate = async () => {
           unidadeDeMedida: () => "3",
         },
         {
-          nome: "Pluviosidade",	
+          nome: "Pluviosidade",
           fator: 10,
           offset: 10,
           formula: "10",
@@ -110,25 +113,25 @@ export const generate = async () => {
           nome: "Velocidade do Vento",
         },
         {
-            nome: "Direção do Vento",
+          nome: "Direção do Vento",
         },
         {
-            nome: "Pluviômetro",
+          nome: "Pluviômetro",
         },
         {
-            nome: "Bateria",
+          nome: "Bateria",
         },
         {
-            nome: "Umidade Relativa do Ar",
+          nome: "Umidade Relativa do Ar",
         },
         {
-            nome: "Pressão Atmosférica",
+          nome: "Pressão Atmosférica",
         },
         {
-            nome: "Precipitação (chuva)",
+          nome: "Precipitação (chuva)",
         },
         {
-            nome: "Radiação Solar Global",
+          nome: "Radiação Solar Global",
         },
       ])
       .execute();
@@ -188,7 +191,7 @@ export const generate = async () => {
           UTC: "UTC-3",
           lati: 15,
           long: 10,
-          unixtime: 1617062877,
+          unixtime: 1617062877, 
         },
       ])
       .execute();
@@ -200,7 +203,6 @@ export const generate = async () => {
       .values([
         {
           unixtime: 1617062877,
-          nivel: 1,
           alerta: () => "1",
         },
       ])
@@ -231,18 +233,15 @@ export const generate = async () => {
       .execute();
 
     await DataBaseSource.createQueryBuilder()
-    .insert()
-    .into("estacao_parametro")
-    .values([{ parametroParametroId: 1, estacaoEstacaoId: 1 },
+      .insert()
+      .into("estacao_parametro")
+      .values([
+        { parametroParametroId: 1, estacaoEstacaoId: 1 },
         { parametroParametroId: 2, estacaoEstacaoId: 1 },
         { parametroParametroId: 3, estacaoEstacaoId: 1 },
         { parametroParametroId: 3, estacaoEstacaoId: 2 },
-        { parametroParametroId: 4, estacaoEstacaoId: 2 },
-        { parametroParametroId: 1, estacaoEstacaoId: 2 },
-        { parametroParametroId: 1, estacaoEstacaoId: 3 },
-        { parametroParametroId: 2, estacaoEstacaoId: 3 },
-        { parametroParametroId: 3, estacaoEstacaoId: 3 },])
-    .execute();
+      ])
+      .execute();
 
     medidaRepository
       .createQueryBuilder()
@@ -252,7 +251,8 @@ export const generate = async () => {
       })
       .where("medida_id = :id", { id: 1 })
       .execute();
+    console.log("Dados gerados com sucesso");
   } catch (error) {
-    console.log("Erro ao gerar dados");
+    console.log("Erro ao gerar dados", error);
   }
 };

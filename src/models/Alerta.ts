@@ -11,6 +11,7 @@ import {
 } from "typeorm";
 import { Medida } from "./Medida";
 import { Report } from "./Report";
+import { Parametro } from "./Parametro";
 
 @Entity({ name: "alerta" })
 export class Alerta {
@@ -39,6 +40,11 @@ export class Alerta {
   })
   nivel!: number;
 
+  @Column({
+    type: "int"
+  })
+  ativo!: number;
+
   @ManyToMany(() => Medida, (medida) => medida.alertas)
   @JoinTable({
     name: "alerta_medida",
@@ -47,4 +53,10 @@ export class Alerta {
 
   @OneToMany(() => Report, (reports) => reports.alerta)
   reports!: Report;
+
+  @ManyToOne(() => Parametro, (parametro) => parametro.alerta)
+  @JoinColumn({
+    name: "fk_parametro",
+  })
+  parametro!: Parametro[];
 }

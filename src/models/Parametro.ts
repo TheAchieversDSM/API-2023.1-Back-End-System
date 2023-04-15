@@ -12,6 +12,7 @@ import { Estacao } from "./Estacao";
 import { Medida } from "./Medida";
 import { TipoParametro } from "./TipoParametro";
 import { UnidadeMedida } from "./unidadeMedida";
+import { Alerta } from "./Alerta";
 
 @Entity({ name: "parametro" })
 export class Parametro {
@@ -40,6 +41,12 @@ export class Parametro {
   })
   offset!: number;
 
+  @Column({
+    type: "int"
+  })
+  ativo!: number;
+
+
   @ManyToOne(() => TipoParametro, (tipo) => tipo.parametro)
   @JoinColumn({
     name: "fk_tipo_id",
@@ -60,4 +67,7 @@ export class Parametro {
     name: "fk_unidadeDeMedida_id",
   })
   unidadeDeMedida!: UnidadeMedida[];
+
+  @ManyToOne(() => Alerta, (alerta) => alerta.parametro)
+  alerta!: Alerta
 }

@@ -1,5 +1,7 @@
 import { Router } from "express";
 
+import { UserControler } from "../controller/";
+
 import alerta from "./alerta";
 import estacao from "./estacao";
 import user from "./user";
@@ -11,13 +13,14 @@ import tipoParametro from "./tipoParametro";
 
 const router = Router();
 
+router.post("/login", UserControler.loginUserAuth);
 router.use("/estacao", estacao);
 router.use("/user", user);
 router.use("/alerta", alerta);
 router.use("/parametro", parametro);
 router.use("/report", report);
-router.use("/medida", medida)
-router.use("/unidadeMedida", unidadeMedida)
+router.use("/medida", medida);
+router.use("/unidadeMedida", unidadeMedida);
 router.use("/tipoParametro", tipoParametro);
 
 export default router;

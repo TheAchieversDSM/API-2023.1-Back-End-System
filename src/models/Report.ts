@@ -20,9 +20,9 @@ export class Report {
   unixtime!: number;
 
   @Column({
-    type: "int",
+    type: "varchar",
   })
-  nivel!: number;
+  msg!: string;
 
   @ManyToOne(() => Alerta, (alerta) => alerta.reports)
   @JoinColumn({

@@ -47,6 +47,11 @@ export class Estacao {
   })
   unixtime!: number;
 
+  @Column({
+    type: "int"
+  })
+  ativo!: number;
+
   @ManyToMany(() => Parametro, (parametro) => parametro.estacoes)
   @JoinTable({
     name: "estacao_parametro",
