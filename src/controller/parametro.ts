@@ -77,6 +77,41 @@ class ParametroController {
       res.json(error);
     }
   }
+  public async getAllParametrosAtivos(req: Request, res: Response, next: NextFunction) {
+    const { id } = req.params;
+
+    try {
+      const getAllAtivos = await parametroRepositorio
+        .createQueryBuilder("parametro")
+        .where("parametro.ativo = :ativo", {ativo: 1})
+        .select(["parametro", "tipo", "unidadeDeMedida"])
+        .leftJoin("parametro.tipo", "tipo")
+        .leftJoin("parametro.unidadeDeMedida", "unidadeDeMedida")
+        .getMany();
+      res.json(getAllAtivos);
+    } catch (error) {
+      res.json(error);
+    }
+  }
+
+  public async getAllParametrosInativos(req: Request, res: Response, next: NextFunction) {
+    const { id } = req.params;
+
+    try {
+      const getAllInativos = await parametroRepositorio
+        .createQueryBuilder("parametro")
+        .where("parametro.ativo = :ativo", {ativo: 0})
+        .select(["parametro", "tipo", "unidadeDeMedida"])
+        .leftJoin("parametro.tipo", "tipo")
+        .leftJoin("parametro.unidadeDeMedida", "unidadeDeMedida")
+        .getMany();
+      res.json(getAllInativos);
+    } catch (error) {
+      res.json(error);
+    }
+  }
+
+
   public async GetMedidaParametroPorEstacao(req: Request, res: Response, next: NextFunction) {
     const { id } = req.params;
     try {
@@ -101,6 +136,7 @@ class ParametroController {
     }
   }
 
+
   public async atualizarParametro(req: Request, res: Response, next: NextFunction) {
     const {
       tipo_parametro,
@@ -117,9 +153,9 @@ class ParametroController {
         .createQueryBuilder("parametro")
         .update(Parametro)
         .set({
-          tipo:tipo_parametro,
+          tipo: tipo_parametro,
           nome: nome_parametro,
-          unidadeDeMedida:unidadeDeMedida_parametro,
+          unidadeDeMedida: unidadeDeMedida_parametro,
           fator: fator_parametro,
           offset: offset_parametro,
           formula: formula_parametro,
