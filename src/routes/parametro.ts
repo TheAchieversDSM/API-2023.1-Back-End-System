@@ -5,6 +5,7 @@ import { auth } from "../middleware/auth";
 const parametro = Router();
 
 parametro.get("/pegarParametros/", ParametroController.getAllParametro);
+
 parametro.get(
   "/pegarParametrosPorId/:id",
   ParametroController.getParametroById
@@ -16,5 +17,10 @@ parametro.get(
 
 parametro.use(auth);
 parametro.post("/cadastro", ParametroController.postParametro);
+parametro.get("/pegarParametrosAtivos/", ParametroController.getAllParametrosAtivos);
+parametro.get("/pegarParametrosInativos/", ParametroController.getAllParametrosInativos);
+parametro.put("/atualizarParametro/:id", ParametroController.atualizarParametro);
+parametro.put("/atualizarEstado/:id", ParametroController.atualizarAtividadeParametro);
+
 
 export default parametro;

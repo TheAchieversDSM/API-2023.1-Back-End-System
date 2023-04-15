@@ -18,6 +18,7 @@ class EstacaoController {
         nome: nome_estacao,
         uid: uid,
         UTC: utc,
+        ativo: 1,
         unixtime: Math.round(new Date().getTime() / 1000),
       });
       await estacaoRepositorio.save(create_estacao);
@@ -63,6 +64,100 @@ class EstacaoController {
     }
   }
 
+  public async getAllEstacaoAtivos(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) {
+    const { id } = req.params;
+
+    try {
+      const getAllAtivos = await estacaoRepositorio
+        .createQueryBuilder("estacao")
+        .where("estacao.ativo = :ativo", { ativo: 1 })
+        .select(["estacao", "parametro", "tipo", "unidadeMedida"])
+        .leftJoin("estacao.parametros", "parametro")
+        .leftJoin("parametro.tipo", "tipo")
+        .leftJoin("parametro.unidadeDeMedida", "unidadeMedida")
+        .getMany();
+      res.json(getAllAtivos);
+    } catch (error) {
+      res.json(error);
+    }
+  }
+
+  public async getAllEstacaoInativos(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) {
+    const { id } = req.params;
+
+    try {
+      const getAllInativos = await estacaoRepositorio
+        .createQueryBuilder("estacao")
+        .where("estacao.ativo = :ativo", { ativo: 0 })
+        .select(["estacao", "parametro", "tipo", "unidadeMedida"])
+        .leftJoin("estacao.parametros", "parametro")
+        .leftJoin("parametro.tipo", "tipo")
+        .leftJoin("parametro.unidadeDeMedida", "unidadeMedida")
+        .getMany();
+      res.json(getAllInativos);
+    } catch (error) {
+      res.json(error);
+    }
+  }
+
+  public async atualizarAtividadeEstacao(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) {
+    const { ativo } = req.body;
+    const { id } = req.params;
+
+    try {
+      await estacaoRepositorio
+        .createQueryBuilder("estacao")
+        .update(Estacao)
+        .set({
+          ativo: ativo,
+        })
+        .where("estacao.estacao_id = :id", { id: id })
+        .execute();
+      return res.status(201).json({
+        ok: `Estado atualizado`,
+      });
+    } catch (error) {
+      return res.status(406).json({ error: error });
+    }
+  }
+  public async getEstacaoParametro(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) {
+    const { idEstacao } = req.params;
+    try {
+      const select = await medidaRepositorio.find({
+        where: {
+          estacao: {
+            estacao_id: Number(idEstacao),
+          },
+        },
+        relations: {
+          parametros: {
+            unidadeDeMedida: true,
+            tipo: true,
+            medidas: true,
+          },
+        },
+      });
+      res.json(select);
+    } catch (error) {
+      console.log(error);
+    }
+  }
   public async pegarEstacoesRelacoes(
     req: Request,
     res: Response,
@@ -86,30 +181,34 @@ class EstacaoController {
       console.log(error);
     }
   }
-  public async getEstacaoParametro(
+  public async atualizarEstacaoById(
     req: Request,
     res: Response,
     next: NextFunction
   ) {
-    const { idEstacao } = req.params;
+    const { id } = req.params;
+    const { nome_estacao, latitude, longitude, utc } = req.body;
+    console.log("Boa noite");
+
     try {
-      const select = await medidaRepositorio.find({
-        where: {
-          estacao: {
-            estacao_id: Number(idEstacao),
-          },
-        },
-        relations: {
-          parametros: {
-            unidadeDeMedida: true,
-            tipo: true,
-          },
-        },
+      await estacaoRepositorio
+        .createQueryBuilder("estacao")
+        .update(Estacao)
+        .set({
+          lati: latitude,
+          long: longitude,
+          nome: nome_estacao,
+          UTC: utc,
+        })
+        .where("estacao.estacao_id = :id", { id: id })
+        .execute();
+      return res.status(201).json({
+        ok: `Estação '${nome_estacao}' atualizada`,
       });
-      res.json(select);
     } catch (error) {
-      console.log(error);
+      res.json(error);
     }
   }
 }
+
 export default new EstacaoController();

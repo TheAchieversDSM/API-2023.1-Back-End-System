@@ -12,6 +12,7 @@ class AlertaController {
         nome: nome,
         valorMax: valorMax,
         valorMinimo: valorMinimo,
+        ativo: 1,
         nivel: nivel,
       });
 
@@ -47,6 +48,36 @@ class AlertaController {
       res.json(error);
     }
   }
+
+  public async getAllAlertasAtivos(req: Request, res: Response, next: NextFunction) {
+    const { id } = req.params;
+
+    try {
+      const getAllAtivos = await alertaRepository
+        .createQueryBuilder("alerta")
+        .where("alerta.ativo = :ativo", {ativo: 1})
+        .getMany();
+      res.json(getAllAtivos);
+    } catch (error) {
+      res.json(error);
+    }
+  }
+
+  public async getAllAlertasInativos(req: Request, res: Response, next: NextFunction) {
+    const { id } = req.params;
+
+    try {
+      const getAllInativos = await alertaRepository
+      .createQueryBuilder("alerta")
+      .where("alerta.ativo = :ativo", {ativo: 0})
+      .getMany();
+      res.json(getAllInativos);
+    } catch (error) {
+      res.json(error);
+    }
+  }
+
+
   public async GetAllReportsWithAlertId(
     req: Request,
     res: Response,
@@ -72,5 +103,55 @@ class AlertaController {
       console.log(error);
     }
   }
+
+  public async atualizarAtividadeAlerta(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) {
+    const { ativo } = req.body;
+    const { id } = req.params;
+
+    try {
+      await alertaRepository
+        .createQueryBuilder("alerta")
+        .update(Alerta)
+        .set({
+          ativo: ativo,
+        })
+        .where("alerta.alerta_id = :id", { id: id })
+        .execute();
+      return res.status(201).json({
+        ok: `Estado atualizado`,
+      });
+    } catch (error) {
+      return res.status(406).json({ error: error });
+    }
+  }
+  public async atualizarAlertaById(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) {
+    const { id } = req.params;
+    const { nome, valorMax, valorMinimo, nivel } = req.body;
+    try {
+      const update = await alertaRepository
+        .createQueryBuilder()
+        .update(Alerta)
+        .set({
+          nome: nome,
+          valorMax: valorMax,
+          valorMinimo: valorMinimo,
+          nivel: nivel,
+        })
+        .where("alerta_id = :id", { id: id })
+        .execute();
+      return res.status(201).json({ ok: `Alerta '${nome}' atualizado` });
+    } catch (error) {
+      res.json(error);
+    }
+  }
 }
+
 export default new AlertaController();

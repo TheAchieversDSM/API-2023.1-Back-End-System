@@ -3,6 +3,7 @@ import { DataBaseSource } from "../config/database";
 import { User } from "../models/index";
 import * as bcrypt from "bcrypt";
 import * as jwt from "jsonwebtoken";
+
 const userRepositorio = DataBaseSource.getRepository(User);
 
 class UserControler {
@@ -34,6 +35,28 @@ class UserControler {
     }
     return res.json(usuario);
   }
+
+  public async deleteUserById(req: Request, res: Response, next: NextFunction) {
+    const { id } = req.body;
+    try {
+      await userRepositorio
+        .createQueryBuilder("user")
+        .delete()
+        .from(User)
+        .where("user.user_id = :id", { id: id })
+        .execute();
+
+      return res
+        .status(201)
+        .json({
+          ok: `Usuário de ID '${id}' deletado`
+        })
+    } catch (error) {
+      return res.status(406).json({ error: error });
+
+    }
+  }
+
   public async getUserById(req: Request, res: Response, next: NextFunction) {
     try {
       const { id } = req.params;
@@ -86,6 +109,31 @@ class UserControler {
       }
     } catch (err) {
       console.log(err);
+
+  public async atualizarUsuario(req: Request, res: Response, next: NextFunction){
+    const { nome, email, senha } = req.body;
+    const { id } = req.params;
+
+    try{
+      await userRepositorio
+        .createQueryBuilder("user")
+        .update(User)
+        .set({
+          nome: nome,
+          email: email,
+          senha: senha
+        })
+        .where("user.user_id = :id", { id: id })
+        .execute();
+
+        return res
+          .status(201)
+          .json({
+            ok: `Usuário '${nome}' atualizado`
+          })
+
+    } catch(error){
+      return res.status(406).json({ error: error });
     }
   }
 }

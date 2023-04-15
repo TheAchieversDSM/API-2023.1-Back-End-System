@@ -27,6 +27,30 @@ class ReportController {
     }
   }
 
+  public async getReportsByStationId(req: Request, res: Response, next: NextFunction) {
+    const { id } = req.params;
+    console.log("teste");
+    try {
+      const getReportsByStationId = await reportRepository
+        .createQueryBuilder("report")
+        .select([
+          "al",
+          "rp",
+          "md",
+          "es"
+        ])
+        .from("report", "rp")
+        .leftJoin("rp.alerta", "al")
+        .leftJoin("al.medida", "md")
+        .leftJoin("md.estacao", "es")
+        .where("es.estacao_id = :id", { id: id })
+        .getMany();
+      res.json(getReportsByStationId);
+    } catch (error) {
+      res.json(error);
+    }
+  }
+
   public async getAllReports(req: Request, res: Response, next: NextFunction) {
     try {
       const getAllReports = await reportRepository
@@ -45,6 +69,5 @@ class ReportController {
       res.json(error);
     }
   }
-
 }
 export default new ReportController();

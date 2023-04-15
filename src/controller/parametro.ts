@@ -22,6 +22,7 @@ class ParametroController {
         unidadeDeMedida: unidadeDeMedida_parametro,
         fator: fator_parametro,
         offset: offset_parametro,
+        ativo: 1,
         formula: formula_parametro,
       });
       await parametroRepositorio.save(create_parametro);
@@ -76,6 +77,41 @@ class ParametroController {
       res.json(error);
     }
   }
+  public async getAllParametrosAtivos(req: Request, res: Response, next: NextFunction) {
+    const { id } = req.params;
+
+    try {
+      const getAllAtivos = await parametroRepositorio
+        .createQueryBuilder("parametro")
+        .where("parametro.ativo = :ativo", {ativo: 1})
+        .select(["parametro", "tipo", "unidadeDeMedida"])
+        .leftJoin("parametro.tipo", "tipo")
+        .leftJoin("parametro.unidadeDeMedida", "unidadeDeMedida")
+        .getMany();
+      res.json(getAllAtivos);
+    } catch (error) {
+      res.json(error);
+    }
+  }
+
+  public async getAllParametrosInativos(req: Request, res: Response, next: NextFunction) {
+    const { id } = req.params;
+
+    try {
+      const getAllInativos = await parametroRepositorio
+        .createQueryBuilder("parametro")
+        .where("parametro.ativo = :ativo", {ativo: 0})
+        .select(["parametro", "tipo", "unidadeDeMedida"])
+        .leftJoin("parametro.tipo", "tipo")
+        .leftJoin("parametro.unidadeDeMedida", "unidadeDeMedida")
+        .getMany();
+      res.json(getAllInativos);
+    } catch (error) {
+      res.json(error);
+    }
+  }
+
+
   public async GetMedidaParametroPorEstacao(req: Request, res: Response, next: NextFunction) {
     const { id } = req.params;
     try {
@@ -99,5 +135,68 @@ class ParametroController {
       res.json(error);
     }
   }
+
+
+  public async atualizarParametro(req: Request, res: Response, next: NextFunction) {
+    const {
+      tipo_parametro,
+      nome_parametro,
+      unidadeDeMedida_parametro,
+      fator_parametro,
+      offset_parametro,
+      formula_parametro,
+    } = req.body;
+    const { id } = req.params;
+
+    try {
+      await parametroRepositorio
+        .createQueryBuilder("parametro")
+        .update(Parametro)
+        .set({
+          tipo: tipo_parametro,
+          nome: nome_parametro,
+          unidadeDeMedida: unidadeDeMedida_parametro,
+          fator: fator_parametro,
+          offset: offset_parametro,
+          formula: formula_parametro,
+        })
+        .where("parametro.parametro_id = :id", { id: id })
+        .execute();
+
+      return res
+        .status(201)
+        .json({
+          ok: `Parametro '${nome_parametro}' atualizado`
+        })
+    } catch (error) {
+      return res.status(406).json({ error: error });
+    }
+  }
+
+  public async atualizarAtividadeParametro(req: Request, res: Response, next: NextFunction) {
+    const { ativo } = req.body;
+    const { id } = req.params;
+
+    try {
+      await parametroRepositorio
+        .createQueryBuilder("parametro")
+        .update(Parametro)
+        .set({
+          ativo: ativo
+        })
+        .where("parametro.parametro_id = :id", { id: id })
+        .execute()
+      return res
+        .status(201)
+        .json({
+          ok: `Estado atualizado`
+        });
+
+    } catch (error) {
+      return res.status(406).json({ error: error });
+    }
+  }
+
+
 }
 export default new ParametroController();

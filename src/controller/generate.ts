@@ -191,7 +191,7 @@ export const generate = async () => {
           UTC: "UTC-3",
           lati: 15,
           long: 10,
-          unixtime: 1617062877,
+          unixtime: 1617062877, 
         },
       ])
       .execute();
@@ -203,7 +203,6 @@ export const generate = async () => {
       .values([
         {
           unixtime: 1617062877,
-          nivel: 1,
           alerta: () => "1",
         },
       ])
