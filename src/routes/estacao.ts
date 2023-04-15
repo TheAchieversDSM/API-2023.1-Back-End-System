@@ -15,4 +15,6 @@ estacao.get(
   EstacaoController.getEstacaoParametro
 );
 
+estacao.put("/atualizarEstacao/:id", EstacaoController.atualizarEstacaoById);
+
 export default estacao;
