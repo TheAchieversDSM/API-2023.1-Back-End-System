@@ -5,17 +5,12 @@ import { Report } from "../models/index";
 const reportRepository = DataBaseSource.getRepository(Report);
 
 class ReportController {
-
   public async getReportById(req: Request, res: Response, next: NextFunction) {
     const { id } = req.params;
     try {
       const getById = await reportRepository
         .createQueryBuilder("report")
-        .select([
-          "al",
-          "rp",
-          "md"
-        ])
+        .select(["al", "rp", "md"])
         .from("report", "rp")
         .leftJoin("rp.alertas", "al")
         .leftJoin("al.medidas", "md")
@@ -27,18 +22,17 @@ class ReportController {
     }
   }
 
-  public async getReportsByStationId(req: Request, res: Response, next: NextFunction) {
+  public async getReportsByStationId(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) {
     const { id } = req.params;
     console.log("teste");
     try {
       const getReportsByStationId = await reportRepository
         .createQueryBuilder("report")
-        .select([
-          "al",
-          "rp",
-          "md",
-          "es"
-        ])
+        .select(["al", "rp", "md", "es"])
         .from("report", "rp")
         .leftJoin("rp.alerta", "al")
         .leftJoin("al.medida", "md")
@@ -55,11 +49,7 @@ class ReportController {
     try {
       const getAllReports = await reportRepository
         .createQueryBuilder("report")
-        .select([
-          "al",
-          "rp",
-          "md"
-        ])
+        .select(["al", "rp", "md"])
         .from("report", "rp")
         .leftJoin("rp.alertas", "al")
         .leftJoin("al.medidas", "md")
