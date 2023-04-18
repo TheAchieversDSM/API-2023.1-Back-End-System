@@ -46,14 +46,11 @@ class UserControler {
         .where("user.user_id = :id", { id: id })
         .execute();
 
-      return res
-        .status(201)
-        .json({
-          ok: `Usuário de ID '${id}' deletado`
-        })
+      return res.status(201).json({
+        ok: `Usuário de ID '${id}' deletado`,
+      });
     } catch (error) {
       return res.status(406).json({ error: error });
-
     }
   }
 
@@ -109,30 +106,32 @@ class UserControler {
       }
     } catch (err) {
       console.log(err);
-
-  public async atualizarUsuario(req: Request, res: Response, next: NextFunction){
+    }
+  }
+  public async atualizarUsuario(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) {
     const { nome, email, senha } = req.body;
     const { id } = req.params;
 
-    try{
+    try {
       await userRepositorio
         .createQueryBuilder("user")
         .update(User)
         .set({
           nome: nome,
           email: email,
-          senha: senha
+          senha: senha,
         })
         .where("user.user_id = :id", { id: id })
         .execute();
 
-        return res
-          .status(201)
-          .json({
-            ok: `Usuário '${nome}' atualizado`
-          })
-
-    } catch(error){
+      return res.status(201).json({
+        ok: `Usuário '${nome}' atualizado`,
+      });
+    } catch (error) {
       return res.status(406).json({ error: error });
     }
   }
