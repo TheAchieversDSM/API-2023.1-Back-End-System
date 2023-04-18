@@ -4,10 +4,12 @@ import cors from "cors";
 import router from "./routes/";
 import { generate } from "./controller/generate";
 import { User } from "./models/index";
+import "./config/firebase";
+import { RealTime } from "./controller/firebase";
 
 const app = express();
 const usuarioRepository = DataBaseSource.getRepository(User);
-
+RealTime();
 try {
   DataBaseSource.initialize()
     .then(async () => {
