@@ -23,6 +23,10 @@ export class Report {
     type: "varchar",
   })
   msg!: string;
+  @Column({
+    type: "varchar",
+  })
+  estacao_uid!: string;
 
   @ManyToOne(() => Alerta, (alerta) => alerta.reports)
   @JoinColumn({

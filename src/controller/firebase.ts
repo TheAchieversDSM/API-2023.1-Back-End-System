@@ -9,13 +9,13 @@ import {
 } from "firebase/database";
 import { DataBaseSource } from "../config/database";
 
-import { Alerta, Estacao, Medida, Report, User } from "../models/index";
+import { Alerta, Estacao, Medida, Report } from "../models/index";
 const alertaRepository = DataBaseSource.getRepository(Alerta);
 const medidaRepository = DataBaseSource.getRepository(Medida);
 const reportRepository = DataBaseSource.getRepository(Report);
 const estacaoRepository = DataBaseSource.getRepository(Estacao);
 
-interface teste {
+interface IAlertas {
   alerta_id: number;
   nome: string;
   valorMax: number;
@@ -30,13 +30,13 @@ interface teste {
   };
 }
 
-interface estacao {
+interface IEstacoes {
   estacao_id: string;
   nome: string;
   uid: string;
 }
-const TesteDeGet = async (nome: string) => {
-  const resultados: teste | any = await alertaRepository.find({
+const GetAlerta = async (nome: string) => {
+  const resultados: IAlertas | any = await alertaRepository.find({
     where: {
       parametro: {
         nome: nome,
@@ -48,11 +48,11 @@ const TesteDeGet = async (nome: string) => {
   });
   const objetosFormatados = resultados.map(
     (resultado: {
-      valorMax: any;
-      parametro: { parametro_id: any; nome: any };
-      alerta_id: any;
-      nome: any;
-      valorMinimo: any;
+      valorMax: number;
+      parametro: { parametro_id: number; nome: string };
+      alerta_id: number;
+      nome: string;
+      valorMinimo: number;
     }) => {
       return {
         max: resultado.valorMax,
@@ -68,13 +68,13 @@ const TesteDeGet = async (nome: string) => {
 };
 
 const GetEstacaoUid = async (uid: string) => {
-  const resultados: estacao | any = await estacaoRepository.find({
+  const resultados: IEstacoes | any = await estacaoRepository.find({
     where: {
       uid: uid,
     },
   });
   const objetosFormatados = resultados.map(
-    (resultado: { uid: any; estacao_id: any; nome: any }) => {
+    (resultado: { uid: string; estacao_id: number; nome: string }) => {
       return {
         uid: resultado.uid,
         id: resultado.estacao_id,
@@ -104,25 +104,8 @@ export const RealTime = () => {
     promise
       .then(async (value: any) => {
         value = String(value).split("_");
-        const alertasMedidas = await TesteDeGet(value[2]);
+        const alertasMedidas = await GetAlerta(value[2]);
         const getEstacaoByUid = await GetEstacaoUid(String(onSnapShot.key));
-        if (
-          value[1] > alertasMedidas[0]["max"] ||
-          value[1] < alertasMedidas[0]["min"]
-        ) {
-          console.log("Gerando Report");
-          const testando = reportRepository.create({
-            alerta: alertasMedidas[0]["id"],
-            msg: `Parametro: ${value[2]}, ${
-              value[1] > alertasMedidas[0]["max"]
-                ? `Valor Maximo: ${value[1]} `
-                : `Valor Minimo: ${value[1]} `
-            }, Data: ${value[0]}`,
-            unixtime: value[0],
-          });
-          /* Medida: ${value[1]} */
-          await reportRepository.save(testando);
-        }
         const medida = medidaRepository.create({
           parametros: alertasMedidas[0]["id_parametro"],
           estacao: getEstacaoByUid[0]["id"],
@@ -130,6 +113,22 @@ export const RealTime = () => {
           valorMedido: value[1],
         });
         await medidaRepository.save(medida);
+        if (
+          value[1] > alertasMedidas[0]["max"] ||
+          value[1] < alertasMedidas[0]["min"]
+        ) {
+          const testando = reportRepository.create({
+            alerta: alertasMedidas[0]["id"],
+            msg: `Parametro: ${value[2]}, ${
+              value[1] > alertasMedidas[0]["max"]
+                ? `Valor Maximo: ${value[1]} `
+                : `Valor Minimo: ${value[1]} `
+            }, UID: ${onSnapShot.key}`,
+            unixtime: value[0],
+            estacao_uid: String(onSnapShot.key),
+          });
+          await reportRepository.save(testando);
+        }
       })
       .catch((error) => {
         console.error(error);
