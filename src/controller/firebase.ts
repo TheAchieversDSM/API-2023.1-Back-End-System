@@ -8,12 +8,21 @@ import {
   orderByKey,
 } from "firebase/database";
 import { DataBaseSource } from "../config/database";
-
 import { Alerta, Estacao, Medida, Report } from "../models/index";
+import EventEmitter from "events";
 const alertaRepository = DataBaseSource.getRepository(Alerta);
 const medidaRepository = DataBaseSource.getRepository(Medida);
 const reportRepository = DataBaseSource.getRepository(Report);
 const estacaoRepository = DataBaseSource.getRepository(Estacao);
+
+const myEmitter = new EventEmitter();
+
+myEmitter.on("start", () => {
+  DataBaseSource.initialize().then(() => {
+    RealTime();
+  });
+});
+myEmitter.emit("start");
 
 interface IAlertas {
   alerta_id: number;
@@ -36,58 +45,66 @@ interface IEstacoes {
   uid: string;
 }
 const GetAlerta = async (nome: string) => {
-  const resultados: IAlertas | any = await alertaRepository.find({
-    where: {
-      parametro: {
-        nome: nome,
+  try {
+    const resultados: IAlertas | any = await alertaRepository.find({
+      where: {
+        parametro: {
+          nome: nome,
+        },
       },
-    },
-    relations: {
-      parametro: true,
-    },
-  });
-  const objetosFormatados = resultados.map(
-    (resultado: {
-      valorMax: number;
-      parametro: { parametro_id: number; nome: string };
-      alerta_id: number;
-      nome: string;
-      valorMinimo: number;
-      nivel: number;
-    }) => {
-      return {
-        max: resultado.valorMax,
-        nivel: resultado.nivel,
-        min: resultado.valorMinimo,
-        id_parametro: resultado?.parametro?.parametro_id,
-        id: resultado.alerta_id,
-        nome_alerta: resultado.nome,
-        nome_parametro: resultado.parametro.nome,
-      };
-    }
-  );
-  return objetosFormatados;
+      relations: {
+        parametro: true,
+      },
+    });
+    const objetosFormatados = resultados.map(
+      (resultado: {
+        valorMax: number;
+        parametro: { parametro_id: number; nome: string };
+        alerta_id: number;
+        nome: string;
+        valorMinimo: number;
+        nivel: number;
+      }) => {
+        return {
+          max: resultado.valorMax,
+          nivel: resultado.nivel,
+          min: resultado.valorMinimo,
+          id_parametro: resultado?.parametro?.parametro_id,
+          id: resultado.alerta_id,
+          nome_alerta: resultado.nome,
+          nome_parametro: resultado.parametro.nome,
+        };
+      }
+    );
+    return objetosFormatados;
+  } catch (error) {
+    console.log(error);
+  }
 };
 
 const GetEstacaoUid = async (uid: string) => {
-  const resultados: IEstacoes | any = await estacaoRepository.find({
-    where: {
-      uid: uid,
-    },
-  });
-  const objetosFormatados = resultados.map(
-    (resultado: { uid: string; estacao_id: number; nome: string }) => {
-      return {
-        uid: resultado.uid,
-        id: resultado.estacao_id,
-        nome: resultado.nome,
-      };
-    }
-  );
-  return objetosFormatados;
+  try {
+    const resultados: IEstacoes | any = await estacaoRepository.find({
+      where: {
+        uid: uid,
+      },
+    });
+    const objetosFormatados = resultados.map(
+      (resultado: { uid: string; estacao_id: number; nome: string }) => {
+        return {
+          uid: resultado.uid,
+          id: resultado.estacao_id,
+          nome: resultado.nome,
+        };
+      }
+    );
+    return objetosFormatados;
+  } catch (error) {
+    console.log(error);
+  }
 };
 
-export const RealTime = () => {
+export default function RealTime() {
   let refData = ref(rt, `esp32/`);
   onChildChanged(refData, (onSnapShot) => {
     refData = ref(rt, `esp32/${onSnapShot.key}`);
@@ -118,7 +135,7 @@ export const RealTime = () => {
           value[1] > alertasMedidas[0]["max"] ||
           value[1] < alertasMedidas[0]["min"]
         ) {
-          console.log('Report Gerado')
+          console.log("Report Gerado");
           const testando = reportRepository.create({
             nivelAlerta: alertasMedidas[0]["nivel"],
             tipoParametro: value[2],
@@ -139,4 +156,4 @@ export const RealTime = () => {
         console.error(error);
       });
   });
-};
+}
