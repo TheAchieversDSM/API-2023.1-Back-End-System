@@ -6,10 +6,18 @@ import { generate } from "./controller/generate";
 import { User } from "./models/index";
 import "./config/firebase";
 import { RealTime } from "./controller/firebase";
+import { Worker } from "worker_threads";
 
 const app = express();
 const usuarioRepository = DataBaseSource.getRepository(User);
-RealTime();
+const worker = new Worker("./controller/firebase");
+
+worker.postMessage({ type: "start" });
+
+worker.on("Start", (result) => {
+  console.log(result);
+  RealTime();
+});
 try {
   DataBaseSource.initialize()
     .then(async () => {

@@ -53,9 +53,11 @@ const GetAlerta = async (nome: string) => {
       alerta_id: number;
       nome: string;
       valorMinimo: number;
+      nivel: number;
     }) => {
       return {
         max: resultado.valorMax,
+        nivel: resultado.nivel,
         min: resultado.valorMinimo,
         id_parametro: resultado?.parametro?.parametro_id,
         id: resultado.alerta_id,
@@ -86,7 +88,6 @@ const GetEstacaoUid = async (uid: string) => {
 };
 
 export const RealTime = () => {
-  console.log("Oi");
   let refData = ref(rt, `esp32/`);
   onChildChanged(refData, (onSnapShot) => {
     refData = ref(rt, `esp32/${onSnapShot.key}`);
@@ -117,7 +118,11 @@ export const RealTime = () => {
           value[1] > alertasMedidas[0]["max"] ||
           value[1] < alertasMedidas[0]["min"]
         ) {
+          console.log('Report Gerado')
           const testando = reportRepository.create({
+            nivelAlerta: alertasMedidas[0]["nivel"],
+            tipoParametro: value[2],
+            valorEmitido: value[1],
             alerta: alertasMedidas[0]["id"],
             msg: `Parametro: ${value[2]}, ${
               value[1] > alertasMedidas[0]["max"]
