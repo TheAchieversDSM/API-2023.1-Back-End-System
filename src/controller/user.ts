@@ -3,6 +3,7 @@ import { DataBaseSource } from "../config/database";
 import { User } from "../models/index";
 import * as bcrypt from "bcrypt";
 import * as jwt from "jsonwebtoken";
+import { createClientRedis } from "../config/redis";
 
 const userRepositorio = DataBaseSource.getRepository(User);
 

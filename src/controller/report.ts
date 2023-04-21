@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import { DataBaseSource } from "../config/database";
 import { Report } from "../models/index";
+import { createClientRedis } from "../config/redis";
 
 const reportRepository = DataBaseSource.getRepository(Report);
 
@@ -40,6 +41,29 @@ class ReportController {
       res.json(getReportsByStationId);
     } catch (error) {
       res.json(error);
+    }
+  }
+  public async GetReportsAlerts(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) {
+    await createClientRedis.connect();
+    const keys = await createClientRedis.keys("*");
+    const keyValuePairs = keys.map((key) => ({ key }));
+    const results: any[] = [];
+    try {
+      await Promise.all(
+        keyValuePairs.map(async (item) => {
+          const value = await createClientRedis.hGetAll(item.key);
+          results.push({ key: item.key, value });
+        })
+      );
+      res.json(results);
+    } catch (err: any) {
+      res.status(500).json({ error: err.message });
+    } finally {
+      createClientRedis.quit();
     }
   }
 

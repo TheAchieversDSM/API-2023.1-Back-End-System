@@ -10,6 +10,7 @@ import {
 import { DataBaseSource } from "../config/database";
 import { Alerta, Estacao, Medida, Report } from "../models/index";
 import EventEmitter from "events";
+import { createClientRedis } from "../config/redis";
 const alertaRepository = DataBaseSource.getRepository(Alerta);
 const medidaRepository = DataBaseSource.getRepository(Medida);
 const reportRepository = DataBaseSource.getRepository(Report);
@@ -105,6 +106,7 @@ const GetEstacaoUid = async (uid: string) => {
 };
 
 export default function RealTime() {
+  console.log("Valor Chegado");
   let refData = ref(rt, `esp32/`);
   onChildChanged(refData, (onSnapShot) => {
     refData = ref(rt, `esp32/${onSnapShot.key}`);
@@ -136,6 +138,13 @@ export default function RealTime() {
           value[1] < alertasMedidas[0]["min"]
         ) {
           console.log("Report Gerado");
+          RedisInsertAlert(
+            String(onSnapShot.key),
+            value[0],
+            value[2],
+            alertasMedidas[0]["nivel"],
+            value[1]
+          );
           const testando = reportRepository.create({
             nivelAlerta: alertasMedidas[0]["nivel"],
             tipoParametro: value[2],
@@ -156,4 +165,23 @@ export default function RealTime() {
         console.error(error);
       });
   });
+}
+async function RedisInsertAlert(
+  uid: string,
+  ut: string,
+  parametro: string,
+  nivelAlerta: string,
+  valor: string
+) {
+  await createClientRedis.connect();
+  await createClientRedis.hSet(`${uid}:${ut}`, {
+    estacao: uid,
+    tempo: ut,
+    parametro: parametro,
+    nivel: nivelAlerta,
+    valor: valor,
+  });
+  createClientRedis.expire(`${uid}:${ut}`, 120);
+  console.log(uid, ut);
+  createClientRedis.quit();
 }

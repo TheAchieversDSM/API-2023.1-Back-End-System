@@ -42,10 +42,9 @@ export class Parametro {
   offset!: number;
 
   @Column({
-    type: "int"
+    type: "int",
   })
   ativo!: number;
-
 
   @ManyToOne(() => TipoParametro, (tipo) => tipo.parametro)
   @JoinColumn({
@@ -69,5 +68,5 @@ export class Parametro {
   unidadeDeMedida!: UnidadeMedida[];
 
   @ManyToOne(() => Alerta, (alerta) => alerta.parametro)
-  alerta!: Alerta
+  alerta!: Alerta;
 }
