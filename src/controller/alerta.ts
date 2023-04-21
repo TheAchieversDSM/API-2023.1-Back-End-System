@@ -6,7 +6,7 @@ const alertaRepository = DataBaseSource.getRepository(Alerta);
 
 class AlertaController {
   public async postAlerta(req: Request, res: Response, next: NextFunction) {
-    const { nome, valorMax, valorMinimo, nivel } = req.body;
+    const { nome, valorMax, valorMinimo, nivel, parametro_id } = req.body;
     try {
       const create_alerta = alertaRepository.create({
         nome: nome,
@@ -14,8 +14,8 @@ class AlertaController {
         valorMinimo: valorMinimo,
         ativo: 1,
         nivel: nivel,
+        parametro: parametro_id,
       });
-
       await alertaRepository.save(create_alerta);
       return res
         .status(201)
@@ -49,13 +49,17 @@ class AlertaController {
     }
   }
 
-  public async getAllAlertasAtivos(req: Request, res: Response, next: NextFunction) {
+  public async getAllAlertasAtivos(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) {
     const { id } = req.params;
 
     try {
       const getAllAtivos = await alertaRepository
         .createQueryBuilder("alerta")
-        .where("alerta.ativo = :ativo", {ativo: 1})
+        .where("alerta.ativo = :ativo", { ativo: 1 })
         .getMany();
       res.json(getAllAtivos);
     } catch (error) {
@@ -63,20 +67,23 @@ class AlertaController {
     }
   }
 
-  public async getAllAlertasInativos(req: Request, res: Response, next: NextFunction) {
+  public async getAllAlertasInativos(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) {
     const { id } = req.params;
 
     try {
       const getAllInativos = await alertaRepository
-      .createQueryBuilder("alerta")
-      .where("alerta.ativo = :ativo", {ativo: 0})
-      .getMany();
+        .createQueryBuilder("alerta")
+        .where("alerta.ativo = :ativo", { ativo: 0 })
+        .getMany();
       res.json(getAllInativos);
     } catch (error) {
       res.json(error);
     }
   }
-
 
   public async GetAllReportsWithAlertId(
     req: Request,
@@ -134,7 +141,7 @@ class AlertaController {
     next: NextFunction
   ) {
     const { id } = req.params;
-    const { nome, valorMax, valorMinimo, nivel } = req.body;
+    const { nome, valorMax, valorMinimo, nivel, parametro_id } = req.body;
     try {
       const update = await alertaRepository
         .createQueryBuilder()
@@ -144,6 +151,7 @@ class AlertaController {
           valorMax: valorMax,
           valorMinimo: valorMinimo,
           nivel: nivel,
+          parametro: parametro_id,
         })
         .where("alerta_id = :id", { id: id })
         .execute();

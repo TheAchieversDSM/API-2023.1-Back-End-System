@@ -23,7 +23,24 @@ export class Report {
     type: "varchar",
   })
   msg!: string;
+  @Column({
+    type: "varchar",
+  })
+  estacao_uid!: string;
+  @Column({
+    type: "varchar",
+  })
+  valorEmitido!: string;
 
+  @Column({
+    type: "varchar",
+  })
+  tipoParametro!: string;
+
+  @Column({
+    type: "int",
+  })
+  nivelAlerta!: string;
   @ManyToOne(() => Alerta, (alerta) => alerta.reports)
   @JoinColumn({
     name: "fk_alerta_id",

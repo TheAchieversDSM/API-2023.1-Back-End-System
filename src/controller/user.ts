@@ -108,6 +108,7 @@ class UserControler {
       console.log(err);
     }
   }
+
   public async atualizarUsuario(
     req: Request,
     res: Response,
@@ -117,13 +118,14 @@ class UserControler {
     const { id } = req.params;
 
     try {
+      const newPass = await bcrypt.hash(senha, 15);
       await userRepositorio
         .createQueryBuilder("user")
         .update(User)
         .set({
           nome: nome,
           email: email,
-          senha: senha,
+          senha: newPass,
         })
         .where("user.user_id = :id", { id: id })
         .execute();

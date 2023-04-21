@@ -11,7 +11,7 @@ class MedidaController{
         try {
             const getById = await medidaRepository
                 .createQueryBuilder("medida")
-                .where("medida.id = :id", { id: id})
+                .where("medida.medida_id = :id", { id: id})
                 .getOne();
             res.json(getById);
         } catch (error) {

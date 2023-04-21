@@ -5,21 +5,15 @@ import { Report } from "../models/index";
 const reportRepository = DataBaseSource.getRepository(Report);
 
 class ReportController {
-
   public async getReportById(req: Request, res: Response, next: NextFunction) {
     const { id } = req.params;
     try {
       const getById = await reportRepository
         .createQueryBuilder("report")
-        .select([
-          "al",
-          "rp",
-          "md"
-        ])
+        .select(["al", "rp"])
         .from("report", "rp")
-        .leftJoin("rp.alertas", "al")
-        .leftJoin("al.medidas", "md")
-        .where("report.report_id = :id", { id: id })
+        .leftJoin("rp.alerta", "al")
+        .where("rp.report_id = :id", { id: id })
         .getOne();
       res.json(getById);
     } catch (error) {
@@ -27,24 +21,22 @@ class ReportController {
     }
   }
 
-  public async getReportsByStationId(req: Request, res: Response, next: NextFunction) {
-    const { id } = req.params;
+  public async getReportsByStationId(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) {
+    const { uid } = req.params;
     console.log("teste");
     try {
-      const getReportsByStationId = await reportRepository
-        .createQueryBuilder("report")
-        .select([
-          "al",
-          "rp",
-          "md",
-          "es"
-        ])
-        .from("report", "rp")
-        .leftJoin("rp.alerta", "al")
-        .leftJoin("al.medida", "md")
-        .leftJoin("md.estacao", "es")
-        .where("es.estacao_id = :id", { id: id })
-        .getMany();
+      const getReportsByStationId = await reportRepository.find({
+        where: {
+          estacao_uid: uid,
+        },
+        relations: {
+          alerta: true,
+        },
+      });
       res.json(getReportsByStationId);
     } catch (error) {
       res.json(error);
@@ -55,14 +47,9 @@ class ReportController {
     try {
       const getAllReports = await reportRepository
         .createQueryBuilder("report")
-        .select([
-          "al",
-          "rp",
-          "md"
-        ])
+        .select(["al", "rp"])
         .from("report", "rp")
-        .leftJoin("rp.alertas", "al")
-        .leftJoin("al.medidas", "md")
+        .leftJoin("rp.alerta", "al")
         .getMany();
       res.json(getAllReports);
     } catch (error) {

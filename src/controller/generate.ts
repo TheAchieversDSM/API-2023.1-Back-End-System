@@ -85,7 +85,7 @@ export const generate = async () => {
           unidadeDeMedida: () => "2",
         },
         {
-          nome: "Temperatura",
+          nome: "temperatura",
           fator: 10,
           offset: 10,
           formula: "2 + 2 = 4",
@@ -107,7 +107,7 @@ export const generate = async () => {
       .into(TipoParametro)
       .values([
         {
-          nome: "Temperatura",
+          nome: "temperatura",
         },
         {
           nome: "Velocidade do Vento",
@@ -180,6 +180,14 @@ export const generate = async () => {
         {
           nome: "Estação 1",
           uid: "123456",
+          UTC: "UTC-3",
+          lati: 10,
+          long: 10,
+          unixtime: 1617062877,
+        },
+        {
+          nome: "Fatec_SJC",
+          uid: "08B61F2AF460",
           UTC: "UTC-3",
           lati: 10,
           long: 10,
