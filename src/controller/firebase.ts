@@ -133,32 +133,32 @@ export default function RealTime() {
           valorMedido: value[1],
         });
         await medidaRepository.save(medida);
-        if (
-          value[1] > alertasMedidas[0]["max"] ||
-          value[1] < alertasMedidas[0]["min"]
-        ) {
-          console.log("Report Gerado");
-          RedisInsertAlert(
-            String(onSnapShot.key),
-            value[0],
-            value[2],
-            alertasMedidas[0]["nivel"],
-            value[1]
-          );
-          const testando = reportRepository.create({
-            nivelAlerta: alertasMedidas[0]["nivel"],
+
+        const matchingAlerts = alertasMedidas.filter(
+          (itens: any) => value[1] >= itens.min && value[1] <= itens.max
+        );
+        for (const alert of matchingAlerts) {
+          const createReports = reportRepository.create({
+            nivelAlerta: alert.nivel,
             tipoParametro: value[2],
             valorEmitido: value[1],
-            alerta: alertasMedidas[0]["id"],
+            alerta: alert.id,
             msg: `Parametro: ${value[2]}, ${
-              value[1] > alertasMedidas[0]["max"]
+              value[1] > alert.max
                 ? `Valor Maximo: ${value[1]} `
                 : `Valor Minimo: ${value[1]} `
             }, UID: ${onSnapShot.key}`,
             unixtime: value[0],
             estacao_uid: String(onSnapShot.key),
           });
-          await reportRepository.save(testando);
+          await reportRepository.save(createReports);
+          await RedisInsertAlert(
+            String(onSnapShot.key),
+            value[0],
+            value[2],
+            alert.id,
+            value[1]
+          );
         }
       })
       .catch((error) => {
@@ -166,6 +166,7 @@ export default function RealTime() {
       });
   });
 }
+
 async function RedisInsertAlert(
   uid: string,
   ut: string,
@@ -173,7 +174,9 @@ async function RedisInsertAlert(
   nivelAlerta: string,
   valor: string
 ) {
-  await createClientRedis.connect();
+  if (!createClientRedis.connect()) {
+    await createClientRedis.connect();
+  }
   await createClientRedis.hSet(`${uid}:${ut}`, {
     estacao: uid,
     tempo: ut,
