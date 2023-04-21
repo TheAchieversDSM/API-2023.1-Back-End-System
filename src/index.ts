@@ -46,3 +46,5 @@ app.listen(5000, () => console.log("Server conectado"));
 app.use(cors());
 app.use(express.json());
 app.use(router);
+
+export default app;
