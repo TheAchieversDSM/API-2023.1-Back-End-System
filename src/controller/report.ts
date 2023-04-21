@@ -10,10 +10,9 @@ class ReportController {
     try {
       const getById = await reportRepository
         .createQueryBuilder("report")
-        .select(["al", "rp", "md"])
+        .select(["al", "rp"])
         .from("report", "rp")
         .leftJoin("rp.alerta", "al")
-        .leftJoin("al.medida", "md")
         .where("rp.report_id = :id", { id: id })
         .getOne();
       res.json(getById);
@@ -27,18 +26,17 @@ class ReportController {
     res: Response,
     next: NextFunction
   ) {
-    const { id } = req.params;
+    const { uid } = req.params;
     console.log("teste");
     try {
-      const getReportsByStationId = await reportRepository
-        .createQueryBuilder("report")
-        .select(["al", "rp", "md", "es"])
-        .from("report", "rp")
-        .leftJoin("rp.alerta", "al")
-        .leftJoin("al.medida", "md")
-        .leftJoin("md.estacao", "es")
-        .where("es.estacao_id = :id", { id: id })
-        .getMany();
+      const getReportsByStationId = await reportRepository.find({
+        where: {
+          estacao_uid: uid,
+        },
+        relations: {
+          alerta: true,
+        },
+      });
       res.json(getReportsByStationId);
     } catch (error) {
       res.json(error);
@@ -49,10 +47,9 @@ class ReportController {
     try {
       const getAllReports = await reportRepository
         .createQueryBuilder("report")
-        .select(["al", "rp", "md"])
+        .select(["al", "rp"])
         .from("report", "rp")
         .leftJoin("rp.alerta", "al")
-        .leftJoin("al.medida", "md")
         .getMany();
       res.json(getAllReports);
     } catch (error) {
