@@ -16,7 +16,7 @@ class UnidadeMedidaController {
             await unidadeMedidaRepositorio.save(create_unidadeMedida);
             return res
                 .status(201)
-                .json({ ok: `Cadastro da unidade de medida '${nome}' feito com sucesso` });
+                .json({id: create_unidadeMedida.unidade_id });
 
         } catch (error) {
             return res.status(406).json({error: error});
