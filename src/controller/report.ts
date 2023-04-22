@@ -50,11 +50,11 @@ class ReportController {
   ) {
     await createClientRedis.connect();
     const keys = await createClientRedis.keys("*");
-    const keyValuePairs = keys.map((key) => ({ key }));
+    const keyValuePairs = keys.map((key: any) => ({ key }));
     const results: any[] = [];
     try {
       await Promise.all(
-        keyValuePairs.map(async (item) => {
+        keyValuePairs.map(async (item: any) => {
           const value = await createClientRedis.hGetAll(item.key);
           results.push({ key: item.key, value });
         })

@@ -30,6 +30,8 @@ class AlertaController {
     try {
       const getById = await alertaRepository
         .createQueryBuilder("alerta")
+        .select(["alerta", "pr"])
+        .leftJoin("alerta.parametro", "pr")
         .where("alerta.alerta_id = :id", { id: id })
         .getOne();
       res.json(getById);
