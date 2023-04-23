@@ -25,8 +25,6 @@ export const generate = async () => {
   try {
     const passwordHash = await bcrypt.hash("secret", 8);
 
-    // Criando dados
-
     await usuarioRepository
       .createQueryBuilder()
       .insert()
@@ -72,35 +70,6 @@ export const generate = async () => {
       ])
       .execute();
 
-    await parametroRepository
-      .createQueryBuilder()
-      .insert()
-      .into(Parametro)
-      .values([
-        {
-          nome: "Velocidade do Vento",
-          fator: 8,
-          offset: 5,
-          formula: "1 + 1 = 2",
-          unidadeDeMedida: () => "2",
-        },
-        {
-          nome: "temperatura",
-          fator: 10,
-          offset: 10,
-          formula: "2 + 2 = 4",
-          unidadeDeMedida: () => "3",
-        },
-        {
-          nome: "Pluviosidade",
-          fator: 10,
-          offset: 10,
-          formula: "10",
-          unidadeDeMedida: () => "22",
-        },
-      ])
-      .execute();
-
     await tipoParametroRepository
       .createQueryBuilder()
       .insert()
@@ -136,38 +105,46 @@ export const generate = async () => {
       ])
       .execute();
 
-    await medidaRepository
+    await parametroRepository
       .createQueryBuilder()
       .insert()
-      .into(Medida)
+      .into(Parametro)
       .values([
         {
-          valorMedido: "10",
-          unixtime: 1617062877,
+          nome: "Velocidade do Vento",
+          fator: 8,
+          offset: 5,
+          formula: "1 + 1 = 2",
+          unidadeDeMedida: () => "2",
+          tipo: () => "2",
+          ativo: 1,
         },
         {
-          valorMedido: "20",
-          unixtime: 1617062877,
-        },
-      ])
-      .execute();
-
-    await alertaRepository
-      .createQueryBuilder()
-      .insert()
-      .into(Alerta)
-      .values([
-        {
-          nome: "Alerta 1",
-          valorMax: 10,
-          valorMinimo: 2,
-          nivel: 1,
+          nome: "Pluviosidade",
+          fator: 10,
+          offset: 10,
+          formula: "10",
+          unidadeDeMedida: () => "22",
+          tipo: () => "4",
+          ativo: 1,
         },
         {
-          nome: "Alerta 2",
-          valorMax: 5,
-          valorMinimo: 1,
-          nivel: 2,
+          nome: "temperatura",
+          fator: 10,
+          offset: 10,
+          formula: "2 + 2 = 4",
+          unidadeDeMedida: () => "3",
+          tipo: () => "1",
+          ativo: 1,
+        },
+        {
+          nome: "umidade",
+          fator: 15,
+          offset: 25,
+          formula: "2 + 4 = 24",
+          unidadeDeMedida: () => "9",
+          tipo: () => "3",
+          ativo: 1,
         },
       ])
       .execute();
@@ -178,87 +155,91 @@ export const generate = async () => {
       .into(Estacao)
       .values([
         {
-          nome: "Estação 1",
-          uid: "123456",
-          UTC: "UTC-3",
-          lati: 10,
-          long: 10,
-          unixtime: 1617062877,
-        },
-        {
-          nome: "Fatec_SJC",
+          lati: -23.1626672200757,
+          long: -45.797295066664,
+          nome: "Estação Antonio",
           uid: "08B61F2AF460",
-          UTC: "UTC-3",
-          lati: 10,
-          long: 10,
-          unixtime: 1617062877,
+          UTC: "0",
+          unixtime: Math.round(new Date().getTime() / 1000),
+          ativo: 1,
         },
         {
-          nome: "Estação 2",
-          uid: "123",
-          UTC: "UTC-3",
-          lati: 15,
-          long: 10,
-          unixtime: 1617062877, 
-        },
-      ])
-      .execute();
-
-    await reportRepository
-      .createQueryBuilder()
-      .insert()
-      .into(Report)
-      .values([
-        {
-          unixtime: 1617062877,
-          alerta: () => "1",
-        },
-      ])
-      .execute();
-
-    // Relacionando dados
-
-    parametroRepository
-      .createQueryBuilder()
-      .update(Parametro)
-      .set({
-        tipo: () => "2",
-      })
-      .where("parametro_id = :id", {
-        id: 1,
-      })
-      .execute();
-
-    await DataBaseSource.createQueryBuilder()
-      .insert()
-      .into("alerta_medida")
-      .values([
-        {
-          alertaAlertaId: 1,
-          medidaMedidaId: 1,
+          lati: -23.1626672200757,
+          long: -45.797295066664,
+          nome: "Estação Matheus",
+          uid: "4022D875FD88",
+          UTC: "0",
+          unixtime: Math.round(new Date().getTime() / 1000),
+          ativo: 1,
         },
       ])
       .execute();
 
     await DataBaseSource.createQueryBuilder()
       .insert()
-      .into("estacao_parametro")
+      .into(`estacao_parametro`)
       .values([
-        { parametroParametroId: 1, estacaoEstacaoId: 1 },
-        { parametroParametroId: 2, estacaoEstacaoId: 1 },
-        { parametroParametroId: 3, estacaoEstacaoId: 1 },
-        { parametroParametroId: 3, estacaoEstacaoId: 2 },
+        { estacaoEstacaoId: 1, parametroParametroId: 3 },
+        { estacaoEstacaoId: 2, parametroParametroId: 4 },
       ])
       .execute();
 
-    medidaRepository
+    await alertaRepository
       .createQueryBuilder()
-      .update(Medida)
-      .set({
-        parametros: () => "1",
-      })
-      .where("medida_id = :id", { id: 1 })
+      .insert()
+      .into(Alerta)
+      .values([
+        {
+          nome: "Alerta de Temperatura 1",
+          valorMax: -1,
+          valorMinimo: 0,
+          nivel: 1,
+          parametro: () => "3",
+          ativo: 1,
+        },
+        {
+          nome: "Alerta de Temperatura 2",
+          valorMax: 1,
+          valorMinimo: 1.5,
+          nivel: 2,
+          parametro: () => "3",
+          ativo: 1,
+        },
+        {
+          nome: "Alerta de Temperatura 3",
+          valorMax: 2,
+          valorMinimo: 1.6,
+          nivel: 3,
+          parametro: () => "3",
+          ativo: 1,
+        },
+        {
+          nome: "Alerta de Umidade 1",
+          valorMax: 0,
+          valorMinimo: -1,
+          nivel: 1,
+          parametro: () => "4",
+          ativo: 1,
+        },
+        {
+          nome: "Alerta de Umidade 2",
+          valorMax: -1.1,
+          valorMinimo: -2,
+          nivel: 2,
+          parametro: () => "4",
+          ativo: 1,
+        },
+        {
+          nome: "Alerta de Umidade 3",
+          valorMax: -2.1,
+          valorMinimo: -3,
+          nivel: 3,
+          parametro: () => "4",
+          ativo: 1,
+        },
+      ])
       .execute();
+
     console.log("Dados gerados com sucesso");
   } catch (error) {
     console.log("Erro ao gerar dados", error);
