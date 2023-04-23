@@ -17,7 +17,7 @@ class TipoParametroController {
             await tipoParametroRepositorio.save(create_tipoParametro);
             return res
                 .status(201)
-                .json({ ok: `Cadastro do tipo de parametro '${nome}' feito com sucesso` });
+                .json({id: create_tipoParametro.tipo_id });
 
         } catch (error) {
             return res.status(406).json({ error: error });
@@ -49,7 +49,6 @@ class TipoParametroController {
             res.json(error);
         }
     }
-
 }
 
 export default new TipoParametroController;

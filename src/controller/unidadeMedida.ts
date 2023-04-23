@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import { DataBaseSource } from "../config/database";
-import { UnidadeMedida } from "../models";
+import { UnidadeMedida } from "../models/unidadeMedida";
 
 const unidadeMedidaRepositorio = DataBaseSource.getRepository(UnidadeMedida);
 
@@ -11,12 +11,12 @@ class UnidadeMedidaController {
         try {
             const create_unidadeMedida = unidadeMedidaRepositorio.create({
                 nome: nome,
-                parametro: parametro
+                parametro: parametro,
             });
             await unidadeMedidaRepositorio.save(create_unidadeMedida);
             return res
                 .status(201)
-                .json({ ok: `Cadastro da unidade de medida '${nome}' feito com sucesso` });
+                .json({id: create_unidadeMedida.unidade_id });
 
         } catch (error) {
             return res.status(406).json({error: error});

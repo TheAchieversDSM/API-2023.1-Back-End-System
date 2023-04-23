@@ -20,10 +20,27 @@ export class Report {
   unixtime!: number;
 
   @Column({
+    type: "varchar",
+  })
+  msg!: string;
+  @Column({
+    type: "varchar",
+  })
+  estacao_uid!: string;
+  @Column({
+    type: "varchar",
+  })
+  valorEmitido!: string;
+
+  @Column({
+    type: "varchar",
+  })
+  tipoParametro!: string;
+
+  @Column({
     type: "int",
   })
-  nivel!: number;
-
+  nivelAlerta!: string;
   @ManyToOne(() => Alerta, (alerta) => alerta.reports)
   @JoinColumn({
     name: "fk_alerta_id",
