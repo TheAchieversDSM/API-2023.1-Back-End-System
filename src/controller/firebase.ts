@@ -155,7 +155,7 @@ export default function RealTime() {
             String(onSnapShot.key),
             value[0],
             value[2],
-            alert.id,
+            alert.nivel,
             value[1]
           );
         }
