@@ -44,6 +44,8 @@ class AlertaController {
     try {
       const getAllAlertas = await alertaRepository
         .createQueryBuilder("alerta")
+        .select(["alerta", "pr"])
+        .leftJoin("alerta.parametro", "pr")
         .getMany();
       res.json(getAllAlertas);
     } catch (error) {
@@ -61,6 +63,8 @@ class AlertaController {
     try {
       const getAllAtivos = await alertaRepository
         .createQueryBuilder("alerta")
+        .select(["alerta", "pr"])
+        .leftJoin("alerta.parametro", "pr")
         .where("alerta.ativo = :ativo", { ativo: 1 })
         .getMany();
       res.json(getAllAtivos);
@@ -79,6 +83,8 @@ class AlertaController {
     try {
       const getAllInativos = await alertaRepository
         .createQueryBuilder("alerta")
+        .select(["alerta", "pr"])
+        .leftJoin("alerta.parametro", "pr")
         .where("alerta.ativo = :ativo", { ativo: 0 })
         .getMany();
       res.json(getAllInativos);
