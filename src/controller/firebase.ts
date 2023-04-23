@@ -106,7 +106,6 @@ const GetEstacaoUid = async (uid: string) => {
 };
 
 export default function RealTime() {
-  console.log("Valor Chegado");
   let refData = ref(rt, `esp32/`);
   onChildChanged(refData, (onSnapShot) => {
     refData = ref(rt, `esp32/${onSnapShot.key}`);
@@ -185,6 +184,5 @@ async function RedisInsertAlert(
     valor: valor,
   });
   createClientRedis.expire(`${uid}:${ut}`, 120);
-  console.log(uid, ut);
   createClientRedis.quit();
 }
