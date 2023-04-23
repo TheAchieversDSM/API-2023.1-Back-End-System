@@ -11,7 +11,6 @@ class EstacaoController {
     const { nome_estacao, latitude, longitude, utc, uid, parametros } =
       req.body;
     try {
-      console.log(parametros);
       const create_estacao = estacaoRepositorio.create({
         lati: latitude,
         long: longitude,
@@ -188,8 +187,6 @@ class EstacaoController {
   ) {
     const { id } = req.params;
     const { nome_estacao, latitude, longitude, utc } = req.body;
-    console.log("Boa noite");
-
     try {
       await estacaoRepositorio
         .createQueryBuilder("estacao")
