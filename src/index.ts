@@ -5,7 +5,6 @@ import router from "./routes/";
 import { generate } from "./controller/generate";
 import { User } from "./models/index";
 import "./config/firebase";
-import RealTime from "./controller/firebase";
 import { Worker } from "worker_threads";
 
 const app = express();
