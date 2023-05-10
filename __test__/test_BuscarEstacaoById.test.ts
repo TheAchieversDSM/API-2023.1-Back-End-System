@@ -1,6 +1,5 @@
 import TesteEstacao from "../src/test/testEstacao";
 
-
 const teste = 'Teste'
 
 const mockRepository = {
@@ -23,8 +22,6 @@ describe('getById', () => {
     expect(teste).toBe('Teste')
  });
 })
-
-
 
 
 
