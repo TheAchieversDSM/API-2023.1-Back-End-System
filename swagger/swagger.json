@@ -1,7 +1,7 @@
 {
   "swagger": "2.0",
   "info": {
-    "description": "Documentação das rotas backend, do sistema web desenvolvido pelo grupo The Achievers para a empresa Tecsus",
+    "description": "Documentação das rotas back-end, do sistema web desenvolvido pelo grupo The Achievers para a empresa Tecsus",
     "version": "1.0.0",
     "title": "API 2023-1",
     "contact": {
