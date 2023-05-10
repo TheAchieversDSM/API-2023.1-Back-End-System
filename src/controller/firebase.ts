@@ -144,6 +144,7 @@ const GetEstacaoUid = async (uid: string, key: string) => {
   }
 };
 
+
 async function InsertIntoMedidas(
   estation: ReturnValuesEstacao,
   alerts: ReturnValuesAlertas[],
