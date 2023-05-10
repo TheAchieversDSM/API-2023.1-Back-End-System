@@ -24,3 +24,6 @@ jobs:
 
     - name: Instala as Dependencias 
       run: npm install
+    - name: Executar segundo arquivo YAML
+      run: |
+      !include .github/workflows/develop.yml
