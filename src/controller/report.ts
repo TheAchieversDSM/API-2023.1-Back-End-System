@@ -2,7 +2,6 @@ import { Request, Response, NextFunction } from "express";
 import { DataBaseSource } from "../config/database";
 import { Report } from "../models/index";
 import { createClientRedis } from "../config/redis";
-
 const reportRepository = DataBaseSource.getRepository(Report);
 
 class ReportController {
@@ -34,6 +33,9 @@ class ReportController {
         where: {
           estacao_uid: uid,
         },
+        order: {
+          unixtime: "DESC",
+        },
         relations: {
           alerta: true,
         },
@@ -64,7 +66,7 @@ class ReportController {
       res.status(500).json({ error: err.message });
     } finally {
       createClientRedis.quit();
-    }
+    } 
   }
 
   public async getAllReports(req: Request, res: Response, next: NextFunction) {
