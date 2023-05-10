@@ -16,7 +16,6 @@ describe('getById', () => {
       expect(mockEstacao).toBeTruthy();
   })
 });
-
  describe('Teste', () => {
   test('Testando em Jest', () => {
     expect(teste).toBe('Teste')
