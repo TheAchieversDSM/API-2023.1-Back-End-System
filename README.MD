@@ -40,5 +40,10 @@
 ```
 
  <h3>:arrows_counterclockwise: Rotas do Sistema</h3>
-  <img alt="Rotas referentes aos produtos." src="https://i.imgur.com/8hj3UcZ.png" />
+  <img alt="Rotas referentes aos produtos." src="https://imgur.com/KUJsDym.png" />
+
+  <img  src="https://imgur.com/rYTI9lj.png" />
+  <img  src="https://imgur.com/qL1i1e3.png" />
+    <img  src="https://imgur.com/udNZil2.png" />
+  
   
