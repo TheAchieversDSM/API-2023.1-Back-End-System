@@ -1,6 +1,7 @@
-import { rt } from "../config/firebase";
+import { rt } from '../config/firebase';
 import {
   ref,
+  Query as ReferenceQuery,
   query,
   limitToLast,
   orderByKey,
@@ -8,119 +9,221 @@ import {
   onChildAdded,
   off,
   remove,
-} from "firebase/database";
-import { DataBaseSource } from "../config/database";
-import EventEmitter from "events";
+  onValue,
+  onChildChanged,
+  DatabaseReference,
+  limitToFirst,
+  orderByChild,
+  set,
+  push,
+  equalTo
+} from 'firebase/database';
+import { DataBaseSource } from '../config/database';
+import EventEmitter from 'events';
 
 import {
   Dados,
   IAlertas,
   IEstacoes,
+  IParametro,
+  IParametros,
+  MedidaConvertidas,
   ReturnValuesAlertas,
-  ReturnValuesEstacao,
-} from "../interfaces/interfaces";
-import { DeepPartial } from "typeorm";
-import { Alerta, Estacao, Medida, Report } from "../models";
-import { createClientRedis } from "../config/redis";
+  ReturnValuesEstacao
+} from '../interfaces/interfaces';
+import { DeepPartial, Repository } from 'typeorm';
+import { Alerta, Estacao, Medida, Parametro, Report } from '../models';
+import { createClientRedis } from '../config/redis';
+import parametro from './parametro';
+import alerta from './alerta';
 
 const myEmitter = new EventEmitter();
 
-myEmitter.on("start", () => {
-  console.log("Start Worker FireBase");
+myEmitter.on('start', () => {
+  console.log('Start Worker FireBase');
   createClientRedis.connect();
   DataBaseSource.initialize().then(() => {
     RealTimeDataBase();
   });
 });
-myEmitter.emit("start");
+myEmitter.emit('start');
+
+function sleep(ms: number) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
 
 export async function RealTimeDataBase() {
   const refRealTime = ref(rt, `esp32TEMP/`);
-  onChildAdded(refRealTime, async (querySnapshot) => {
-    if (querySnapshot.exists()) {
-      const dispositivoId = querySnapshot.key;
-      const refRealTime = ref(rt, `esp32TEMP/${dispositivoId}`);
-      const queryReference = query(refRealTime, orderByKey(), limitToLast(1));
-      const onChildDispositivo = onChildAdded(
-        queryReference,
-        async (snapshot) => {
-          console.log(new Date());
-          const lastValue: Dados | null = snapshot.exists()
-            ? snapshot.val()
-            : null;
-          const getawayUid: ReturnValuesEstacao = await GetEstacaoUid(
-            String(dispositivoId),
-            String(snapshot.key)
-          ).then((res) => res);
-          const alerta: ReturnValuesAlertas[] = await GetAlerta(
-            String(lastValue?._nomeParametro)
-          ).then((res) => res);
-          await InsertIntoMedidas(getawayUid, alerta, lastValue);
-        }
-      );
-      off(queryReference, "child_added", onChildDispositivo);
-    }
+  const onChildAdd = onChildAdded(refRealTime, snapShot => {
+    const uidGataWay: string | null = snapShot.key;
+    const refRealTime: DatabaseReference = ref(rt, `esp32TEMP/${uidGataWay}`);
+    const queryRealTime: ReferenceQuery = query(
+      refRealTime,
+      limitToLast(1),
+      orderByChild("enviado"),
+      equalTo(false),
+    );
+    const updateValuesGataway = onChildAdded(
+      queryRealTime,
+      async updateSnapShot => {
+        console.log(updateSnapShot.val())
+        const updateBooleanValue: string | null = updateSnapShot.key;
+        const referenceUpdate: DatabaseReference = ref(
+          rt,
+          `esp32TEMP/${uidGataWay}/${updateBooleanValue}`
+        );
+        const values: Dados | any = updateSnapShot.exists()
+          ? updateSnapShot.val()
+          : null;
+        InsertDataToMySQL(values, referenceUpdate);
+      }
+    );
+    off(refRealTime, 'value', updateValuesGataway);
   });
+  off(refRealTime, 'value', onChildAdd);
 }
 
-/* Funções envolvendo data-source */
-const GetAlerta = async (nome: string) => {
-  const alertaRepository = DataBaseSource.getRepository(Alerta);
+async function InsertDataToMySQL(valores: Dados, reference: DatabaseReference) {
+  const GataWayUid: string = valores._uid;
+  const GataWayUnixTime: string = valores._unixtime;
+  const GetGataWayUid = await GetEstacaoUid(GataWayUid).then(res => res);
+  if (GetGataWayUid !== null) {
+    const GetMedidaConvertidas = await CalcularOffSetAndFator(valores);
+    await InsertMedida(valores, GetGataWayUid, GetMedidaConvertidas, reference);
+    await InsertReport(GetMedidaConvertidas, GataWayUid, GataWayUnixTime);
+  }
+}
+
+async function InsertMedida(
+  valores: Dados,
+  estacao: ReturnValuesEstacao,
+  conversao: MedidaConvertidas[],
+  reference: DatabaseReference
+) {
   try {
-    const resultados: IAlertas | any = await alertaRepository.find({
+    valores.parametros.map(async values => {
+      const parametros = await GetParametro(values).then(res => res);
+      const filterConversaoNotUnderfined = conversao
+        .filter(i => i !== undefined && parametros?.nome === i.parametro)
+        .map(i => i.conversao);
+      const medidaRepository = DataBaseSource.getRepository(Medida);
+      if (parametros !== undefined) {
+        const insertMedidas = medidaRepository.create({
+          estacao: Number(estacao.id),
+          unixtime: valores._unixtime,
+          valorMedido: filterConversaoNotUnderfined[0],
+          parametros: parametros.parametro_id
+        } as unknown as DeepPartial<Report>);
+        await medidaRepository.save(insertMedidas);
+      }
+    });
+    update(reference, { enviado: true });
+  } catch (error) {
+    console.log(`Erro a  o inserir no banco a medida`, error);
+  }
+}
+
+async function InsertReport(values: any, uid: string, unixtime: string) {
+  try {
+    const GetAlertas = await GetAlerta(values);
+    GetAlertas?.filter(async valores => {
+      const reportRepository = DataBaseSource.getRepository(Report);
+      if (valores !== undefined) {
+        const createReport = reportRepository.create({
+          estacao_uid: uid,
+          alerta: valores.alertaId,
+          msg: `Parametro: ${valores.nomeParametro}, ${
+            Number(valores.valorMedido) > valores.valorMaximo
+              ? `Valor Maximo: ${valores.valorMaximo} `
+              : `Valor Minimo: ${valores.valorMinimo} `
+          }, UID: ${uid}`,
+          nivelAlerta: valores.nivel,
+          tipoParametro: valores.parametroId,
+          unixtime: Number(unixtime),
+          valorEmitido: valores.valorMedido
+        } as unknown as DeepPartial<Report>);
+        await reportRepository.save(createReport);
+      }
+    });
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+async function GetAlerta(medidaConvertidas: MedidaConvertidas[]) {
+  const alertaRepositorio = DataBaseSource.manager.getRepository(Alerta);
+  try {
+    const returnAlertas = await Promise.all(
+      medidaConvertidas.map(async i => {
+        if (i !== undefined) {
+          const records: IAlertas | any = await alertaRepositorio
+            .createQueryBuilder('alerta')
+            .select(['alerta', 'parametro'])
+            .leftJoin('alerta.parametro', 'parametro')
+            .where('parametro.nome = :nome', { nome: i.parametro })
+            .andWhere(
+              'alerta.valorMax >= :conversao AND alerta.valorMinimo <= :conversao',
+              { conversao: Number(i.conversao) }
+            )
+            .getOne();
+          if (records !== null) {
+            return {
+              alertaId: records?.alerta_id,
+              parametroId: records?.parametro.parametro_id,
+              nomeParametro: records?.parametro.nome,
+              valorMaximo: records?.valorMax,
+              valorMinimo: records?.valorMinimo,
+              nivel: records?.nivel,
+              valorMedido: i.conversao
+            };
+          }
+        }
+      })
+    );
+    return returnAlertas;
+  } catch (error) {
+    console.log(error);
+  }
+}
+const GetParametro = async (parametroNome: IParametros) => {
+  const parametroRepository = DataBaseSource.manager.getRepository(Parametro);
+  try {
+    const resultados = await parametroRepository.find({
       where: {
-        parametro: {
-          nome: nome,
-        },
-      },
-      relations: {
-        parametro: true,
-      },
+        nome: parametroNome._nomeParametro
+      }
     });
     if (resultados.length !== 0) {
-      const objetosFormatados = resultados.map(
-        (resultado: {
-          valorMax: number;
-          parametro: {
-            parametro_id: number;
-            nome: string;
-            offset: number;
-            fator: number;
-          };
-          alerta_id: number;
-          nome: string;
-          valorMinimo: number;
-          nivel: number;
-        }) => {
-          return {
-            max: resultado.valorMax,
-            nivel: resultado.nivel,
-            min: resultado.valorMinimo,
-            id_parametro: resultado?.parametro?.parametro_id,
-            id: resultado.alerta_id,
-            nome_alerta: resultado.nome,
-            nome_parametro: resultado.parametro.nome,
-            offset_parametro: resultado.parametro.offset,
-            fator_parametro: resultado.parametro.fator,
-          };
-        }
-      );
-      return objetosFormatados;
+      const objetosFormatados = resultados.map((result: IParametro) => {
+        return {
+          ativo: result.ativo,
+          fator: result.fator,
+          formula: result.formula,
+          nome: result.nome,
+          offset: result.offset,
+          parametro_id: result.parametro_id
+        };
+      });
+      return objetosFormatados[0];
     } else {
-      console.log("Cadastre um Alerta com o parametro: ", nome);
+      const unixTimeInSeconds = Math.floor(new Date().getTime() / 1000);
+      await ParametroDosentExist(
+        parametroNome._nomeParametro,
+        unixTimeInSeconds
+      );
     }
   } catch (error) {
     console.log(error);
   }
 };
 
-const GetEstacaoUid = async (uid: string, key: string) => {
+const GetEstacaoUid = async (uid: string) => {
   const estacaoRepository = DataBaseSource.manager.getRepository(Estacao);
   try {
     const resultados: IEstacoes | any = await estacaoRepository.find({
       where: {
-        uid: uid,
-      },
+        uid: uid
+      }
     });
     if (resultados.length !== 0) {
       const objetosFormatados = resultados.map(
@@ -128,15 +231,14 @@ const GetEstacaoUid = async (uid: string, key: string) => {
           return {
             uid: resultado.uid,
             id: resultado.estacao_id,
-            nome: resultado.nome,
+            nome: resultado.nome
           };
         }
       );
       return objetosFormatados[0];
     } else {
-      console.log("Porfavor, cadastre a estação com o UID", uid);
       const unixTimeInSeconds = Math.floor(new Date().getTime() / 1000);
-      RedisEstacaoDosentExist(uid, unixTimeInSeconds);
+      await RedisEstacaoDosentExist(uid, unixTimeInSeconds);
       return null;
     }
   } catch (error) {
@@ -144,65 +246,22 @@ const GetEstacaoUid = async (uid: string, key: string) => {
   }
 };
 
-async function InsertIntoMedidas(
-  estation: ReturnValuesEstacao,
-  alerts: ReturnValuesAlertas[],
-  values: Dados | null
-) {
-  const medidaRepository = DataBaseSource.getRepository(Medida);
-  if (values !== null && estation !== null && alerts !== null) {
-    const conversao = (
-      Number(values?._medida) * alerts[0].fator_parametro +
-      1 * alerts[0].offset_parametro
-    ).toFixed(2);
-    const medida = medidaRepository.create({
-      parametros: alerts[0]?.id_parametro,
-      unixtime: values?._unixtime,
-      valorMedido: conversao,
-      estacao: estation.id,
-    } as unknown as DeepPartial<Medida>);
-    await medidaRepository.save(medida);
-    await CreateReports(estation, conversao, alerts, values);
-  }
-}
-
-async function CreateReports(
-  estation: ReturnValuesEstacao,
-  conversao: string,
-  alerts: ReturnValuesAlertas[],
-  values: Dados | null
-) {
-  const reportRepository = DataBaseSource.getRepository(Report);
-
-  const matchingAlerts = alerts.filter(
-    (itens: any) =>
-      Number(conversao) >= itens.min && Number(conversao) <= itens.max
+async function CalcularOffSetAndFator(values: Dados) {
+  const conversao: MedidaConvertidas[] | any = await Promise.all(
+    values.parametros.map(async (valores: IParametros) => {
+      const returnParametro = await GetParametro(valores).then(res => res);
+      if (returnParametro?.nome == valores._nomeParametro) {
+        const matematica = (
+          Number(valores._medida) * Number(returnParametro.fator) +
+          1 * Number(returnParametro.offset)
+        ).toFixed(2);
+        return { conversao: matematica, parametro: returnParametro.nome };
+      }
+    })
   );
-  if (matchingAlerts.length !== 0) {
-    const report = reportRepository.create({
-      alerta: matchingAlerts[0].id,
-      estacao_uid: estation.uid,
-      msg: `Parametro: ${values?._nomeParametro}, ${
-        Number(conversao) > matchingAlerts[0].max
-          ? `Valor Maximo: ${matchingAlerts[0].max} `
-          : `Valor Minimo: ${matchingAlerts[0].min} `
-      }, UID: ${estation.uid}`,
-      nivelAlerta: matchingAlerts[0].nivel,
-      tipoParametro: values?._nomeParametro,
-      unixtime: values?._unixtime,
-      valorEmitido: conversao,
-    } as unknown as DeepPartial<Report>);
-    await reportRepository.save(report);
-    await RedisInsertAlert(
-      estation.uid,
-      String(values?._unixtime),
-      String(values?._nomeParametro),
-      matchingAlerts[0].nivel,
-      conversao
-    );
-  }
+  return conversao;
 }
-/* Redis */
+
 async function RedisInsertAlert(
   uid: string,
   ut: string,
@@ -215,7 +274,7 @@ async function RedisInsertAlert(
     tempo: ut,
     parametro: parametro,
     nivel: nivelAlerta,
-    valor: valor,
+    valor: valor
   });
   createClientRedis.expire(`${uid}:${ut}`, 120);
 }
@@ -224,9 +283,18 @@ async function RedisEstacaoDosentExist(uid: string, ut: number | string) {
   await createClientRedis.hSet(`${uid}:${ut}:not_exist`, {
     estacao: uid,
     unixtime: ut,
-    msg: `Estação com o UID: ${uid} não está cadastrada no sistema`,
+    msg: `Estação com o UID '${uid}' não está cadastrada no sistema`
   });
-  createClientRedis.expire(`${uid}:${ut}`, 60);
+  createClientRedis.expire(`${uid}:${ut}:not_exist`, 60);
+}
+
+async function ParametroDosentExist(parametro: string, ut: number | string) {
+  await createClientRedis.hSet(`${parametro}:${ut}:not_exist`, {
+    parametro: parametro,
+    unixtime: ut,
+    msg: `O Parametro '${parametro}' não existe`
+  });
+  createClientRedis.expire(`${parametro}:${ut}:not_exist`, 60);
 }
 
 /* Melhorar */
@@ -235,10 +303,10 @@ async function DeleteResultFromFirebase(uid: string, key: string) {
     await update(ref(rt, `esp32TEMP/${uid}/${key}`), {
       _medida: null,
       _nomeParametro: null,
-      _unixtime: null,
+      _unixtime: null
     })
-      .then(() => console.log("Item Removido"))
-      .catch((err) => console.log(err));
+      .then(() => console.log('Item Removido'))
+      .catch(err => console.log(err));
     return;
   } catch (error) {
     console.log(error);
