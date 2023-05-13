@@ -1,9 +1,13 @@
 export interface Dados {
-  _medida: string;
-  _nomeParametro: string;
-  _unixtime: number;
+  _uid: string;
+  _unixtime: string;
+  enviado: false;
+  parametros: IParametros[];
 }
-
+export interface IParametros {
+  _nomeParametro: string;
+  _medida: number;
+}
 export interface ReturnValuesAlertas {
   offset_parametro: number;
   nome_parametro: string;
@@ -27,17 +31,25 @@ export interface IAlertas {
   valorMax: number;
   valorMinimo: number;
   nivel: number;
-  parametro: {
-    parametro_id: number;
-    nome: string;
-    formula: string;
-    fator: number;
-    offset: number;
-  };
+  ativo: number;
+  parametro: IParametro;
+}
+export interface IParametro {
+  parametro_id: number;
+  nome: string;
+  formula: string;
+  fator: number;
+  offset: number;
+  ativo: number;
 }
 
 export interface IEstacoes {
   estacao_id: number;
   nome: string;
   uid: string;
+}
+
+export interface MedidaConvertidas {
+  conversao: number;
+  parametro: string;
 }
