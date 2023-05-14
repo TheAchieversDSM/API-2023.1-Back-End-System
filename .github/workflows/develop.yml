@@ -1,10 +1,10 @@
-name: NodeJS with Webpack
+name: Develop
 
 on:
   push:
-    branches: [ "homologacao" ]
+    branches: [ "develop" ]
   pull_request:
-    branches: [ "homologacao" ]
+    branches: [ "develop" ]
 
 jobs:
   build:
@@ -24,3 +24,6 @@ jobs:
 
     - name: Instala as Dependencias 
       run: npm install
+      
+    - name: Realiza os testes
+      run: npm run test

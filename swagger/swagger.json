@@ -1,0 +1,780 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "description": "Documentação das rotas back-end, do sistema web desenvolvido pelo grupo The Achievers para a empresa Tecsus",
+    "version": "1.0.0",
+    "title": "API 2023-1",
+    "contact": {
+      "email": "theachievers.fatec@gmail.com"
+    },
+    "license": {
+      "name": "MIT license",
+      "url": "https://github.com/TheAchieversDSM/API-2023.1-Back-End-System"
+    }
+  },
+  "host": "virtserver.swaggerhub.com",
+  "basePath": "/TAISSALOMAO_1/api-2023_1/1.0.0",
+  "tags": [
+    {
+      "name": "Estações",
+      "description": "Operações relacionadas as estações."
+    },
+    {
+      "name": "Parâmetros",
+      "description": "Operações relacionadas aos parametros."
+    },
+    {
+      "name": "Alertas",
+      "description": "Operações relacionadas aos alertas."
+    },
+    {
+      "name": "Usuários",
+      "description": "Operações relacionadas aos usuários."
+    }
+  ],
+  "schemes": [
+    "https",
+    "http"
+  ],
+  "paths": {
+    "/estacao/cadastro": {
+      "post": {
+        "tags": [
+          "Estações"
+        ],
+        "summary": "Cadastra uma nova estação no banco de dados.",
+        "description": "Utiliza a requisição POST e registra uma estação e seus parametros no banco de dados.",
+        "operationId": "/cadastro",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "List of user object",
+            "required": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/EstacaoID"
+              }
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "A estação foi cadastrada com sucesso"
+          }
+        }
+      }
+    },
+    "/estacao/pegarEstacoes": {
+      "get": {
+        "tags": [
+          "Estações"
+        ],
+        "summary": "Busca todas as estações registradas na plataforma",
+        "description": "Ultiliza a requisição Get para mostrar todas as estações cadastradas.",
+        "operationId": "pegarEstacoes",
+        "parameters": [],
+        "responses": {
+          "302": {
+            "description": "retorna a estação registrada pelo ID"
+          }
+        }
+      }
+    },
+    "/estacao/pegarEstacoesPorId/:id": {
+      "get": {
+        "tags": [
+          "Estações"
+        ],
+        "summary": "Busca uma estação especifica registrada na plataforma",
+        "description": "Ultiliza a requisição Get a estação desejada.",
+        "operationId": "pegarEstacoesPorId/:id",
+        "parameters": [],
+        "responses": {
+          "302": {
+            "description": "retorna as estações registradas"
+          }
+        }
+      }
+    },
+    "/estacao/pegarEstacoesAtivas": {
+      "get": {
+        "tags": [
+          "Estações"
+        ],
+        "summary": "Busca todas as estações ativas da plataforma",
+        "description": "Ultiliza a requisição GET para realizar a busca.",
+        "operationId": "pegarEstacoesAtivas",
+        "parameters": [],
+        "responses": {
+          "302": {
+            "description": "retorna as estações ativadas."
+          }
+        }
+      }
+    },
+    "/estacao/pegarEstacoesInativas": {
+      "get": {
+        "tags": [
+          "Estações"
+        ],
+        "summary": "Busca todas as estações inativas da plataforma",
+        "description": "Ultiliza a requisição GET para realizar a busca.",
+        "operationId": "pegarEstacoesInativas",
+        "parameters": [],
+        "responses": {
+          "302": {
+            "description": "retorna as estações desativadas."
+          }
+        }
+      }
+    },
+    "/estacao/atualizarEstado/:id": {
+      "put": {
+        "tags": [
+          "Estações"
+        ],
+        "summary": "Ativa ou desativa uma estação existente.",
+        "description": "através da id, ativa ou desativa uma estação cadastrada.",
+        "operationId": "atualizarEstado/:id",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "ID da estação",
+            "description": "Id da Estação que será deleta",
+            "required": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/EstacaoID"
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Ok"
+          },
+          "400": {
+            "description": "ID de estação inválido"
+          },
+          "404": {
+            "description": "Chamado not found"
+          }
+        }
+      }
+    },
+    "/parametro/cadastro": {
+      "post": {
+        "tags": [
+          "Parâmetros"
+        ],
+        "summary": "Cadastra um novo parâmetro",
+        "description": "Cadastra um novo parâmetro na plataforma.",
+        "operationId": "cadastro",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/SensorType"
+              }
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "O parâmetro foi cadastrado com sucesso"
+          }
+        }
+      }
+    },
+    "/parametro/pegarParametros": {
+      "get": {
+        "tags": [
+          "Parâmetros"
+        ],
+        "summary": "Busca todos os parametros cadastrados",
+        "description": "Retorna todos os parametros cadastrados na plataforma",
+        "operationId": "pegarParametros",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/SensorType"
+              }
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Retorna todos os parametros cadastradas com sucesso"
+          }
+        }
+      }
+    },
+    "/parametro/pegarParametrosPorId/:id": {
+      "get": {
+        "tags": [
+          "Parâmetros"
+        ],
+        "summary": "Busca um parametro especifico pelo ID.",
+        "description": "Retorna o parametro já cadastrado na plataforma pelo seu ID.",
+        "operationId": "pegarParametrosPorId/:id",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Sensor"
+              }
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "O parâmetro foi cadastrado com sucesso"
+          }
+        }
+      }
+    },
+    "/parametro/pegarParametrosAtivos/": {
+      "get": {
+        "tags": [
+          "Parâmetros"
+        ],
+        "summary": "Busca todos os parâmetros ativos.",
+        "description": "Retorna todos os parâmetros cadastrados na plataforma que estão ativos.",
+        "operationId": "pegarParametrosAtivos",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Sensor"
+              }
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Retorna todos os parâmetros cadastrados"
+          }
+        }
+      }
+    },
+    "/parametro/pegarParametrosInativos/": {
+      "get": {
+        "tags": [
+          "Parâmetros"
+        ],
+        "summary": "Busca todos os parâmetros inativos.",
+        "description": "Retorna todos os parâmetros cadastrados na plataforma que estão inativos.",
+        "operationId": "pegarParametrosInativos - application/json",
+        "parameters": [],
+        "responses": {
+          "302": {
+            "description": "Retorna todos os parâmetros cadastrados",
+            "schema": {
+              "$ref": "#/definitions/Sensor"
+            }
+          }
+        }
+      }
+    },
+    "/parametro/atualizarEstado/:id": {
+      "put": {
+        "tags": [
+          "Parâmetros"
+        ],
+        "summary": "Ativa ou desativa um parâmetro",
+        "description": "Ativa ou desativa um parâmetro especifico pelo ID.",
+        "operationId": "atualizarEstado",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "ID do Sensor",
+            "description": "Id do Sensor que será deleta",
+            "required": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/SensorID"
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Ok"
+          },
+          "400": {
+            "description": "ID de Sensor inválido"
+          },
+          "404": {
+            "description": "Chamado not found"
+          }
+        }
+      }
+    },
+    "/parametro/atualizarParametro/:id": {
+      "put": {
+        "tags": [
+          "Parâmetros"
+        ],
+        "summary": "Atualiza os dados de um parâmetro",
+        "description": "Atualiza os dados de um Sensor já cadastrado na plataforma.",
+        "operationId": "atualizarParametro",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "dados que serão atualizados",
+            "required": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/SensorID"
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "retorna o parâmetro com os dados alterados"
+          }
+        }
+      }
+    },
+    "/alerta/cadastro": {
+      "post": {
+        "tags": [
+          "Alertas"
+        ],
+        "summary": "Cadastra um novo alerta.",
+        "description": "Utiliza a requisição POST e registra um novo alerta no banco de dados.",
+        "operationId": "cadastroAlerta",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "List of user object",
+            "required": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/EstacaoID"
+              }
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "O alerta foi cadastrada com sucesso"
+          }
+        }
+      }
+    },
+    "/alerta/pegarAlertas": {
+      "get": {
+        "tags": [
+          "Alertas"
+        ],
+        "summary": "Busca todos os alertas.",
+        "description": "Retorna todos os alertas cadastrados na plataforma.",
+        "operationId": "pegarAlertas - application/json",
+        "parameters": [],
+        "responses": {
+          "302": {
+            "description": "Retorna todos os alertas cadastrados",
+            "schema": {
+              "$ref": "#/definitions/Sensor"
+            }
+          }
+        }
+      }
+    },
+    "/alerta/pegarAlertasPodId:id": {
+      "get": {
+        "tags": [
+          "Alertas"
+        ],
+        "summary": "Busca um alerta especifico pelo ID.",
+        "description": "Busca um alerta cadastrado na plataforma pelo seu ID.",
+        "operationId": "pegarAlertasPodId - application/json",
+        "parameters": [],
+        "responses": {
+          "302": {
+            "description": "Retorna um alerta especifico cadastrado",
+            "schema": {
+              "$ref": "#/definitions/Sensor"
+            }
+          }
+        }
+      }
+    },
+    "/alerta/atualizarAlertaPorId/:id": {
+      "put": {
+        "tags": [
+          "Alertas"
+        ],
+        "summary": "Atualiza as informações que serão passadas pelo alerta.",
+        "description": "Através da id, atualiza um alerta cadastrado.",
+        "operationId": "atualizarAlerta",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "ID da estação",
+            "description": "Id da Estação que será deleta",
+            "required": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/EstacaoID"
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Ok"
+          },
+          "400": {
+            "description": "ID de estação inválido"
+          },
+          "404": {
+            "description": "Chamado not found"
+          }
+        }
+      }
+    },
+    "/alerta/atualizarEstado/:id": {
+      "put": {
+        "tags": [
+          "Alertas"
+        ],
+        "summary": "Ativa ou desativa um alerta.",
+        "description": "Através da id, ativa ou desativa um alerta cadastrado.",
+        "operationId": "atualizarEstadoAlerta",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "ID da estação",
+            "description": "Id da Estação que será deleta",
+            "required": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/EstacaoID"
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Ok"
+          },
+          "400": {
+            "description": "ID de estação inválido"
+          },
+          "404": {
+            "description": "Chamado not found"
+          }
+        }
+      }
+    },
+    "/usuario/cadastro": {
+      "post": {
+        "tags": [
+          "Usuários"
+        ],
+        "summary": "Cadastra um novo usuário.",
+        "description": "Utiliza a requisição POST e registra um novo usuário na plataforma.",
+        "operationId": "cadastroUsuario",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "List of user object",
+            "required": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/EstacaoID"
+              }
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "O alerta foi cadastrada com sucesso"
+          }
+        }
+      }
+    },
+    "/usuario/pegarUsuarios": {
+      "get": {
+        "tags": [
+          "Usuários"
+        ],
+        "summary": "Busca todos os usuários.",
+        "description": "Retorna todos os usuários cadastrados na plataforma.",
+        "operationId": "pegarUsuarios - application/json",
+        "parameters": [],
+        "responses": {
+          "302": {
+            "description": "Retorna todos os usuários cadastrados",
+            "schema": {
+              "$ref": "#/definitions/Sensor"
+            }
+          }
+        }
+      }
+    },
+    "/usuario/pegarUsuariosPorId/:id": {
+      "get": {
+        "tags": [
+          "Usuários"
+        ],
+        "summary": "Busca um usuário especifico pelo seu ID.",
+        "description": "Retorna um usuário cadastrado na plataforma pelo seu ID.",
+        "operationId": "pegarUsuariosPeloId - application/json",
+        "parameters": [],
+        "responses": {
+          "302": {
+            "description": "Retorna todos os usuários cadastrados",
+            "schema": {
+              "$ref": "#/definitions/Sensor"
+            }
+          }
+        }
+      }
+    },
+    "/usuario/atualizarUsuario/:id": {
+      "put": {
+        "tags": [
+          "Usuários"
+        ],
+        "summary": "Atualiza as informações de um usuário.",
+        "description": "Através da id, atualiza as informções de um usuário especifico.",
+        "operationId": "atualizarUsuario",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "ID da estação",
+            "description": "Id da Estação que será deleta",
+            "required": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/EstacaoID"
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Ok"
+          },
+          "400": {
+            "description": "ID de estação inválido"
+          },
+          "404": {
+            "description": "Chamado not found"
+          }
+        }
+      }
+    },
+    "/usuario/deletarUsuario/": {
+      "delete": {
+        "tags": [
+          "Usuários"
+        ],
+        "summary": "Deleta um usuário.",
+        "description": "Deleta um usuário cadastrado na plataforma.",
+        "operationId": "deletarUsuario",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "ID da estação",
+            "description": "Id da Estação que será deleta",
+            "required": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/EstacaoID"
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Ok"
+          },
+          "400": {
+            "description": "ID de estação inválido"
+          },
+          "404": {
+            "description": "Chamado not found"
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "Estacao": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "number"
+        },
+        "nome": {
+          "type": "string"
+        },
+        "uid": {
+          "type": "string"
+        },
+        "UTC": {
+          "type": "string"
+        },
+        "lati": {
+          "type": "number"
+        },
+        "long": {
+          "type": "number"
+        },
+        "unixtime": {
+          "type": "number"
+        }
+      }
+    },
+    "EstacaoID": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "number"
+        }
+      }
+    },
+    "Parametro": {
+      "type": "object",
+      "properties": {
+        "tipo": {
+          "type": "string"
+        },
+        "id": {
+          "type": "number"
+        },
+        "nome": {
+          "type": "string"
+        },
+        "formula": {
+          "type": "string"
+        },
+        "fator": {
+          "type": "number"
+        },
+        "offset": {
+          "type": "number"
+        },
+        "ativo": {
+          "type": "number"
+        }
+      }
+    },
+    "Alerta": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "number"
+        },
+        "alerta_id": {
+          "type": "number"
+        },
+        "nome": {
+          "type": "string"
+        },
+        "valorMax": {
+          "type": "string"
+        },
+        "valorMin": {
+          "type": "number"
+        },
+        "nivel": {
+          "type": "number"
+        },
+        "ativo": {
+          "type": "number"
+        }
+      }
+    },
+    "Usuarios": {
+      "type": "object",
+      "properties": {
+        "user_id": {
+          "type": "number"
+        },
+        "nome": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string"
+        },
+        "senha": {
+          "type": "string"
+        }
+      }
+    }
+  },
+  "externalDocs": {
+    "description": "Veja mais sobre o projeto em:",
+    "url": "https://github.com/TheAchieversDSM/API-2023.1"
+  }
+}

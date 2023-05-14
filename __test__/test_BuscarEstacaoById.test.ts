@@ -1,6 +1,5 @@
 import TesteEstacao from "../src/test/testEstacao";
 
-
 const teste = 'Teste'
 
 const mockRepository = {
@@ -17,14 +16,11 @@ describe('getById', () => {
       expect(mockEstacao).toBeTruthy();
   })
 });
-
  describe('Teste', () => {
   test('Testando em Jest', () => {
     expect(teste).toBe('Teste')
  });
 })
-
-
 
 
 
