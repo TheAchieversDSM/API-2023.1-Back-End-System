@@ -34,6 +34,7 @@ export const generate = async () => {
           nome: "Usuario 1",
           email: "usuario1@theAchievers.com",
           senha: passwordHash,
+          tipoUsuario: 1
         },
       ])
       .execute();
