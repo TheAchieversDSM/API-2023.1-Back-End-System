@@ -315,9 +315,9 @@ async function ParametroDosentExist(
   await createClientRedis.hSet(`${parametro._nomeParametro}:${ut}:not_exist`, {
     parametro: parametro._nomeParametro,
     unixtime: ut,
-    msg: `O Parametro '${parametro}' não existe`
+    msg: `O Parametro '${parametro._nomeParametro}' não existe`
   });
-  createClientRedis.expire(`${parametro}:${ut}:not_exist`, 60).then(() => {
+  createClientRedis.expire(`${parametro._nomeParametro}:${ut}:not_exist`, 60).then(() => {
     set(ref(rt, `backups_inserts_failed/${estacao}/${reference.key}`), {
       _unixtime: ut,
       _uid: estacao,
