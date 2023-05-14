@@ -1,6 +1,6 @@
 import TesteParametro from "../src/test/testParametro";
 
-const teste = 'Testando'
+const teste = 'Teste'
 
 const mockRepository = {
   findOneBy: jest.fn(),
@@ -19,6 +19,6 @@ describe('getById', () => {
 
  describe('Teste', () => {
   test('Testando em Jest', () => {
-    expect(teste).toBe('Testando')
+    expect(teste).toBe('Teste')
  });
 })

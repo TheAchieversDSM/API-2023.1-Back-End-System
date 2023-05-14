@@ -9,7 +9,7 @@ const userRepositorio = DataBaseSource.getRepository(User);
 
 class UserControler {
   public async createUser(req: Request, res: Response, next: NextFunction) {
-    const { email, senha, nome } = req.body;
+    const { email, senha, nome, tipoUsuario } = req.body;
     if (!email || !senha || email.trim() === "" || senha.trim() === "") {
       return res.json({
         error:
@@ -20,6 +20,7 @@ class UserControler {
     obj.email = email;
     obj.senha = senha;
     obj.nome = nome;
+    obj.tipoUsuario = tipoUsuario;
     const usuario: any = await userRepositorio.manager
       .save(User, obj)
       .catch((e) => {
@@ -32,6 +33,7 @@ class UserControler {
       return res.json({
         id: usuario.id,
         email: usuario.mail,
+        tipoUsuario: usuario.tipoUsuario
       });
     }
     return res.json(usuario);

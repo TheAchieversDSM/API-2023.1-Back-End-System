@@ -27,6 +27,11 @@ export class User {
   @Column({ type: "varchar" })
   senha!: string;
 
+  @Column({
+    type: "int",
+  })
+  tipoUsuario!: number;
+
   @BeforeInsert()
   @BeforeUpdate()
   hashPassword(): void {

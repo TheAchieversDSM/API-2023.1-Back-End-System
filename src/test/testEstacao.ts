@@ -1,7 +1,5 @@
 import { Estacao } from "../models";
 
-
-
 export default class TesteEstacao {
     static giveMeaValidStation(): Estacao{
         const estacao = new Estacao();
