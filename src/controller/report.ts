@@ -50,7 +50,6 @@ class ReportController {
     res: Response,
     next: NextFunction
   ) {
-    await createClientRedis.connect();
     const keys = await createClientRedis.keys('*');
     const keyValuePairs = keys.map((key: any) => ({ key }));
     const results: any[] = [];
@@ -64,8 +63,6 @@ class ReportController {
       res.json(results);
     } catch (err: any) {
       res.status(500).json({ error: err.message });
-    } finally {
-      createClientRedis.quit();
     }
   }
 
