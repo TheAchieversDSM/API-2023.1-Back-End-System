@@ -2,21 +2,17 @@ import { rt } from '../config/firebase';
 import {
   ref,
   Query as ReferenceQuery,
-  query,
   limitToLast,
-  orderByKey,
   update,
   onChildAdded,
   off,
   remove,
   onValue,
-  onChildChanged,
   DatabaseReference,
-  limitToFirst,
   orderByChild,
   set,
-  push,
-  equalTo
+  equalTo,
+  query
 } from 'firebase/database';
 import { DataBaseSource } from '../config/database';
 import EventEmitter from 'events';
@@ -28,14 +24,11 @@ import {
   IParametro,
   IParametros,
   MedidaConvertidas,
-  ReturnValuesAlertas,
   ReturnValuesEstacao
 } from '../interfaces/interfaces';
-import { DeepPartial, Repository } from 'typeorm';
+import { DeepPartial } from 'typeorm';
 import { Alerta, Estacao, Medida, Parametro, Report } from '../models';
 import { createClientRedis } from '../config/redis';
-import parametro from './parametro';
-import alerta from './alerta';
 
 const myEmitter = new EventEmitter();
 
@@ -46,11 +39,8 @@ myEmitter.on('start', () => {
     RealTimeDataBase();
   });
 });
-myEmitter.emit('start');
 
-function sleep(ms: number) {
-  return new Promise(resolve => setTimeout(resolve, ms));
-}
+myEmitter.emit('start');
 
 export async function RealTimeDataBase() {
   const refRealTime = ref(rt, `esp32TEMP/`);
@@ -60,13 +50,12 @@ export async function RealTimeDataBase() {
     const queryRealTime: ReferenceQuery = query(
       refRealTime,
       limitToLast(1),
-      orderByChild("enviado"),
-      equalTo(false),
+      orderByChild('enviado'),
+      equalTo(false)
     );
     const updateValuesGataway = onChildAdded(
       queryRealTime,
       async updateSnapShot => {
-        console.log(updateSnapShot.val())
         const updateBooleanValue: string | null = updateSnapShot.key;
         const referenceUpdate: DatabaseReference = ref(
           rt,
@@ -84,11 +73,17 @@ export async function RealTimeDataBase() {
 }
 
 async function InsertDataToMySQL(valores: Dados, reference: DatabaseReference) {
+  console.log(new Date());
   const GataWayUid: string = valores._uid;
   const GataWayUnixTime: string = valores._unixtime;
   const GetGataWayUid = await GetEstacaoUid(GataWayUid).then(res => res);
   if (GetGataWayUid !== null) {
-    const GetMedidaConvertidas = await CalcularOffSetAndFator(valores);
+    const GetMedidaConvertidas = await CalcularOffSetAndFator(
+      valores,
+      GataWayUid,
+      GataWayUnixTime,
+      reference
+    );
     await InsertMedida(valores, GetGataWayUid, GetMedidaConvertidas, reference);
     await InsertReport(GetMedidaConvertidas, GataWayUid, GataWayUnixTime);
   }
@@ -102,7 +97,12 @@ async function InsertMedida(
 ) {
   try {
     valores.parametros.map(async values => {
-      const parametros = await GetParametro(values).then(res => res);
+      const parametros = await GetParametro(
+        values,
+        estacao.uid,
+        valores._unixtime,
+        reference
+      ).then(res => res);
       const filterConversaoNotUnderfined = conversao
         .filter(i => i !== undefined && parametros?.nome === i.parametro)
         .map(i => i.conversao);
@@ -143,6 +143,13 @@ async function InsertReport(values: any, uid: string, unixtime: string) {
           valorEmitido: valores.valorMedido
         } as unknown as DeepPartial<Report>);
         await reportRepository.save(createReport);
+        await RedisInsertAlert(
+          uid,
+          unixtime,
+          valores.nomeParametro,
+          valores.nivel,
+          String(valores.valorMedido)
+        );
       }
     });
   } catch (error) {
@@ -185,7 +192,12 @@ async function GetAlerta(medidaConvertidas: MedidaConvertidas[]) {
     console.log(error);
   }
 }
-const GetParametro = async (parametroNome: IParametros) => {
+const GetParametro = async (
+  parametroNome: IParametros,
+  estacao: string,
+  unixtime: string,
+  reference: DatabaseReference
+) => {
   const parametroRepository = DataBaseSource.manager.getRepository(Parametro);
   try {
     const resultados = await parametroRepository.find({
@@ -206,11 +218,7 @@ const GetParametro = async (parametroNome: IParametros) => {
       });
       return objetosFormatados[0];
     } else {
-      const unixTimeInSeconds = Math.floor(new Date().getTime() / 1000);
-      await ParametroDosentExist(
-        parametroNome._nomeParametro,
-        unixTimeInSeconds
-      );
+      await ParametroDosentExist(parametroNome, unixtime, estacao, reference);
     }
   } catch (error) {
     console.log(error);
@@ -246,10 +254,20 @@ const GetEstacaoUid = async (uid: string) => {
   }
 };
 
-async function CalcularOffSetAndFator(values: Dados) {
+async function CalcularOffSetAndFator(
+  values: Dados,
+  estacao: string,
+  unixtime: string,
+  reference: DatabaseReference
+) {
   const conversao: MedidaConvertidas[] | any = await Promise.all(
     values.parametros.map(async (valores: IParametros) => {
-      const returnParametro = await GetParametro(valores).then(res => res);
+      const returnParametro = await GetParametro(
+        valores,
+        estacao,
+        unixtime,
+        reference
+      ).then(res => res);
       if (returnParametro?.nome == valores._nomeParametro) {
         const matematica = (
           Number(valores._medida) * Number(returnParametro.fator) +
@@ -288,27 +306,48 @@ async function RedisEstacaoDosentExist(uid: string, ut: number | string) {
   createClientRedis.expire(`${uid}:${ut}:not_exist`, 60);
 }
 
-async function ParametroDosentExist(parametro: string, ut: number | string) {
-  await createClientRedis.hSet(`${parametro}:${ut}:not_exist`, {
-    parametro: parametro,
+async function ParametroDosentExist(
+  parametro: IParametros,
+  ut: number | string,
+  estacao: string,
+  reference: DatabaseReference
+) {
+  await createClientRedis.hSet(`${parametro._nomeParametro}:${ut}:not_exist`, {
+    parametro: parametro._nomeParametro,
     unixtime: ut,
     msg: `O Parametro '${parametro}' não existe`
   });
-  createClientRedis.expire(`${parametro}:${ut}:not_exist`, 60);
+  createClientRedis.expire(`${parametro}:${ut}:not_exist`, 60).then(() => {
+    set(ref(rt, `backups_inserts_failed/${estacao}/${reference.key}`), {
+      _unixtime: ut,
+      _uid: estacao,
+      enviado: false,
+      parametros: { ...parametro }
+    });
+  });
 }
 
 /* Melhorar */
-async function DeleteResultFromFirebase(uid: string, key: string) {
+async function DeleteResultFromFirebase() {
   try {
-    await update(ref(rt, `esp32TEMP/${uid}/${key}`), {
-      _medida: null,
-      _nomeParametro: null,
-      _unixtime: null
-    })
-      .then(() => console.log('Item Removido'))
-      .catch(err => console.log(err));
-    return;
-  } catch (error) {
-    console.log(error);
+    const refRealTime = ref(rt, `esp32TEMP/`);
+
+    const deleteValues = onValue(refRealTime, deleteSnapshot => {
+      deleteSnapshot.forEach(key => {
+        const queryTarget = query(
+          key.ref,
+          orderByChild('enviado'),
+          equalTo(true)
+        );
+        onValue(queryTarget, targetQuert => {
+          targetQuert.forEach(itens => {
+            remove(ref(rt, `esp32TEMP/${targetQuert.key}/${itens.key}`));
+          });
+        });
+      });
+    });
+    return () => off(refRealTime, 'value', deleteValues);
+  } catch (err) {
+    console.log(err);
   }
 }
