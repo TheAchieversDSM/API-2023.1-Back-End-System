@@ -298,7 +298,7 @@ async function RedisInsertAlert(
 }
 
 async function RedisEstacaoDosentExist(uid: string, ut: number | string) {
-  await createClientRedis.hSet(`${uid}:${ut}:not_exist`, {
+  await createClientRedis.hSet(`${uid}:not_exist`, {
     estacao: uid,
     unixtime: ut,
     msg: `Estação com o UID '${uid}' não está cadastrada no sistema`
@@ -312,7 +312,7 @@ async function ParametroDosentExist(
   estacao: string,
   reference: DatabaseReference
 ) {
-  await createClientRedis.hSet(`${parametro._nomeParametro}:${ut}:not_exist`, {
+  await createClientRedis.hSet(`${parametro._nomeParametro}:not_exist`, {
     parametro: parametro._nomeParametro,
     unixtime: ut,
     msg: `O Parametro '${parametro._nomeParametro}' não existe`
