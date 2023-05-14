@@ -6,8 +6,10 @@ import { generate } from "./controller/generate";
 import { User } from "./models/index";
 import "./config/firebase";
 import { Worker } from "worker_threads";
+import { createClientRedis } from "./config/redis";
 
 const app = express();
+createClientRedis.connect();
 const usuarioRepository = DataBaseSource.getRepository(User);
 // No worker principal
 const worker = new Worker(`${__dirname}/controller/firebase.ts`);
