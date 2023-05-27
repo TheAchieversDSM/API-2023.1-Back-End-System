@@ -73,7 +73,6 @@ export async function RealTimeDataBase() {
 }
 
 async function InsertDataToMySQL(valores: Dados, reference: DatabaseReference) {
-  console.log(new Date());
   const GataWayUid: string = valores._uid;
   const GataWayUnixTime: string = valores._unixtime;
   const GetGataWayUid = await GetEstacaoUid(GataWayUid).then(res => res);
@@ -108,14 +107,11 @@ async function InsertMedida(
         .map(i => i.conversao);
       const medidaRepository = DataBaseSource.getRepository(Medida);
       if (parametros !== undefined) {
-        const timeZoneCalculed =
-          estacao.utc > 0
-            ? Number(valores._unixtime) + estacao.utc * 3600
-            : Number(valores._unixtime) - estacao.utc * 3600;
-        console.log(timeZoneCalculed);
+        const timeZone = estacao.utc * 3600;
+        const timeZoneCalculed = Number(valores._unixtime) + timeZone;
         const insertMedidas = medidaRepository.create({
           estacao: Number(estacao.id),
-          unixtime: valores._unixtime,
+          unixtime: timeZoneCalculed,
           valorMedido: filterConversaoNotUnderfined[0],
           parametros: parametros.parametro_id
         } as unknown as DeepPartial<Report>);
@@ -244,13 +240,13 @@ const GetEstacaoUid = async (uid: string) => {
           uid: string;
           estacao_id: number;
           nome: string;
-          utc: number;
+          UTC: number;
         }) => {
           return {
             uid: resultado.uid,
             id: resultado.estacao_id,
             nome: resultado.nome,
-            utc: resultado.utc
+            utc: resultado.UTC
           };
         }
       );
