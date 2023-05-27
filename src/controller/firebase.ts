@@ -108,6 +108,11 @@ async function InsertMedida(
         .map(i => i.conversao);
       const medidaRepository = DataBaseSource.getRepository(Medida);
       if (parametros !== undefined) {
+        const timeZoneCalculed =
+          estacao.utc > 0
+            ? Number(valores._unixtime) + estacao.utc * 3600
+            : Number(valores._unixtime) - estacao.utc * 3600;
+        console.log(timeZoneCalculed);
         const insertMedidas = medidaRepository.create({
           estacao: Number(estacao.id),
           unixtime: valores._unixtime,
@@ -235,11 +240,17 @@ const GetEstacaoUid = async (uid: string) => {
     });
     if (resultados.length !== 0) {
       const objetosFormatados = resultados.map(
-        (resultado: { uid: string; estacao_id: number; nome: string }) => {
+        (resultado: {
+          uid: string;
+          estacao_id: number;
+          nome: string;
+          utc: number;
+        }) => {
           return {
             uid: resultado.uid,
             id: resultado.estacao_id,
-            nome: resultado.nome
+            nome: resultado.nome,
+            utc: resultado.utc
           };
         }
       );
@@ -317,14 +328,16 @@ async function ParametroDosentExist(
     unixtime: ut,
     msg: `O Parametro '${parametro._nomeParametro}' não existe`
   });
-  createClientRedis.expire(`${parametro._nomeParametro}:${ut}:not_exist`, 60).then(() => {
-    set(ref(rt, `backups_inserts_failed/${estacao}/${reference.key}`), {
-      _unixtime: ut,
-      _uid: estacao,
-      enviado: false,
-      parametros: { ...parametro }
+  createClientRedis
+    .expire(`${parametro._nomeParametro}:${ut}:not_exist`, 60)
+    .then(() => {
+      set(ref(rt, `backups_inserts_failed/${estacao}/${reference.key}`), {
+        _unixtime: ut,
+        _uid: estacao,
+        enviado: false,
+        parametros: { ...parametro }
+      });
     });
-  });
 }
 
 /* Melhorar */

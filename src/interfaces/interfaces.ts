@@ -23,6 +23,7 @@ export interface ReturnValuesEstacao {
   uid: string;
   id: number;
   nome: string;
+  utc: number;
 }
 
 export interface IAlertas {
