@@ -13,6 +13,6 @@ export class UnidadeMedida {
   })
   nome!: string;
 
-  @OneToMany(() => Parametro, (parametro) => parametro.unidadeDeMedida)
+  @OneToMany(() => Parametro, (parametro: any) => parametro.unidadeDeMedida)
   parametro!: Parametro;
 }

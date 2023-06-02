@@ -41,7 +41,7 @@ export class Report {
     type: "int",
   })
   nivelAlerta!: string;
-  @ManyToOne(() => Alerta, (alerta) => alerta.reports)
+  @ManyToOne(() => Alerta, (alerta: any) => alerta.reports)
   @JoinColumn({
     name: "fk_alerta_id",
   })

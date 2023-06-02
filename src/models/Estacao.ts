@@ -52,12 +52,12 @@ export class Estacao {
   })
   ativo!: number;
 
-  @ManyToMany(() => Parametro, (parametro) => parametro.estacoes)
+  @ManyToMany(() => Parametro, (parametro: any) => parametro.estacoes)
   @JoinTable({
     name: "estacao_parametro",
   })
   parametros!: Parametro[];
 
-  @OneToMany(() => Medida, (medidas) => medidas.parametros)
+  @OneToMany(() => Medida, (medidas: any) => medidas.parametros)
   medidas!: Medida;
 }

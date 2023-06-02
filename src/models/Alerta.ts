@@ -45,16 +45,16 @@ export class Alerta {
   })
   ativo!: number;
 
-  @ManyToMany(() => Medida, (medida) => medida.alertas)
+  @ManyToMany(() => Medida, (medida: any) => medida.alertas)
   @JoinTable({
     name: "alerta_medida",
   })
   medida!: Medida[];
 
-  @OneToMany(() => Report, (reports) => reports.alerta)
+  @OneToMany(() => Report, (reports: any) => reports.alerta)
   reports!: Report;
 
-  @ManyToOne(() => Parametro, (parametro) => parametro.alerta)
+  @ManyToOne(() => Parametro, (parametro: any) => parametro.alerta)
   @JoinColumn({
     name: "fk_parametro",
   })

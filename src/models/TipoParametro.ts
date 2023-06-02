@@ -19,6 +19,6 @@ export class TipoParametro {
   })
   nome!: string;
 
-  @OneToMany(() => Parametro, (parametro) => parametro.tipo)
+  @OneToMany(() => Parametro, (parametro: any) => parametro.tipo)
   parametro!: Parametro;
 }

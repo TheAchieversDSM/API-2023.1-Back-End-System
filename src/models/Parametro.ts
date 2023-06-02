@@ -46,27 +46,27 @@ export class Parametro {
   })
   ativo!: number;
 
-  @ManyToOne(() => TipoParametro, (tipo) => tipo.parametro)
+  @ManyToOne(() => TipoParametro, (tipo: any) => tipo.parametro)
   @JoinColumn({
     name: "fk_tipo_id",
   })
   tipo!: TipoParametro[];
 
-  @OneToMany(() => Medida, (medidas) => medidas.parametros)
+  @OneToMany(() => Medida, (medidas: any) => medidas.parametros)
   medidas!: Medida;
 
-  @ManyToMany(() => Estacao, (estacao) => estacao.parametros)
+  @ManyToMany(() => Estacao, (estacao: any) => estacao.parametros)
   estacoes!: Estacao[];
 
   @ManyToOne(
     () => UnidadeMedida,
-    (unidadeDeMedida) => unidadeDeMedida.parametro
+    (unidadeDeMedida: any) => unidadeDeMedida.parametro
   )
   @JoinColumn({
     name: "fk_unidadeDeMedida_id",
   })
   unidadeDeMedida!: UnidadeMedida[];
 
-  @ManyToOne(() => Alerta, (alerta) => alerta.parametro)
+  @ManyToOne(() => Alerta, (alerta: any) => alerta.parametro)
   alerta!: Alerta;
 }
