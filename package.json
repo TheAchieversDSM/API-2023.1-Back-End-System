@@ -9,6 +9,7 @@
   "scripts": {
     "dev": "ts-node-dev src/index.ts",
     "start": "ts-node src/index.ts",
+    "start:firebase": "ts-node-dev src/firebase.ts",
     "migration:generate": "typeorm-ts-node-commonjs -d ./src/config/database.ts migration:generate ./src/migrations/default",
     "migration:run": "typeorm-ts-node-commonjs -d ./src/config/database.ts migration:run",
     "migration:revert": "typeorm-ts-node-commonjs -d ./src/config/database.ts migration:revert",
@@ -31,14 +32,14 @@
     "cors": "^2.8.5",
     "dotenv": "^16.0.3",
     "express": "^4.18.2",
-    "firebase": "^9.19.1",
+    "firebase": "^9.22.1",
     "jsonwebtoken": "^9.0.0",
     "mysql2": "^3.2.0",
     "redis": "^4.6.5",
     "reflect-metadata": "^0.1.13",
     "swagger-jsdoc": "^6.2.8",
     "swagger-ui-express": "^4.6.3",
-    "typeorm": "^0.3.10"
+    "typeorm": "^0.3.16"
   },
   "devDependencies": {
     "@babel/core": "^7.21.4",
