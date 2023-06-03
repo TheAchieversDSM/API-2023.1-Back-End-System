@@ -90,7 +90,7 @@ class UserControler {
       if (user.length == 1) {
         if (await bcrypt.compare(password, user[0].senha as string)) {
           const token = jwt.sign(
-            { id: user[0].user_id },
+            { id: user[0].user_id, nivel: user[0].tipoUsuario },
             process.env.APP_SECRET as string,
             {
               expiresIn: "1D",
