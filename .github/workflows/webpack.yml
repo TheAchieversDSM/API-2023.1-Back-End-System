@@ -2,9 +2,9 @@ name: NodeJS with Webpack
 
 on:
   push:
-    branches: [ "homologacao" ]
+    branches: [ "Pre-Release" ]
   pull_request:
-    branches: [ "homologacao" ]
+    branches: [ "Pre-Release" ]
 
 jobs:
   build:
