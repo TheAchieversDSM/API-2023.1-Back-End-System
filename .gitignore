@@ -6,3 +6,5 @@ migrations/
 .vscode/
 yarn.lock
 coverage/
+fullchain.pem
+privkey.pem

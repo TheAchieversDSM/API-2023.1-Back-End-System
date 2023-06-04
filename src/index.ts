@@ -5,10 +5,25 @@ import {User} from "./models/index";
 import router from "./routes/";
 import express from "express";
 import "./config/firebase";
+import https from "https";
 import cors from "cors";
+import path from 'path';
+import fs from "fs";
 
-const app = express();
-createClientRedis.connect()
+const certPath = path.join(__dirname, 'fullchain.pem');
+const keyPath = path.join(__dirname, 'privkey.pem')
+
+const cert = fs.readFileSync(certPath);
+const key = fs.readFileSync(keyPath);
+
+const serverOptions = {
+  cert: cert,
+  key: key,
+};
+
+const api = express();
+
+createClientRedis.connect();
 const usuarioRepository = DataBaseSource.getRepository(User);
 try {
   DataBaseSource.initialize()
@@ -29,10 +44,12 @@ try {
 } catch (error) {
   console.log(error);
 }
-
-app.listen(5000, () => console.log("Server conectado"));
-app.use(cors());
-app.use(express.json());
-app.use(router);
+const app = https.createServer(serverOptions, api);
+app.listen(5000, () => {
+  console.log("Servidor Express com HTTPS em execução na porta 3000");
+});
+api.use(cors());
+api.use(express.json());
+api.use(router);
 
 export default app;

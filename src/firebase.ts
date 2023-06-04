@@ -156,7 +156,7 @@ async function CalcularOffSetAndFator(values: Dados, estacao: string, unixtime: 
     values.parametros.map(async (valores: IParametros) => {
       const returnParametro = await GetParametro(valores,estacao,unixtime,reference).then((res) => res);
       if (returnParametro?.nome == valores._nomeParametro) {
-        const matematica = (Number(valores._medida) * Number(returnParametro.fator) + 1 * Number(returnParametro.offset)).toFixed(2);
+        const matematica = Number(valores._medida);
         return {conversao: matematica, parametro: returnParametro.nome};
       }
     })
