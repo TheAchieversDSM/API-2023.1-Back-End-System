@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import { FindOperator } from "typeorm";
+import { Between, FindOperator } from "typeorm";
 import { DataBaseSource } from "../config/database";
 import { Estacao, Medida } from "../models/index";
 
@@ -153,6 +153,7 @@ class EstacaoController {
         },
       });
       res.json(select);
+      console.log(select)
     } catch (error) {
       console.log(error);
     }

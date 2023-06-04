@@ -26,12 +26,12 @@ export class Medida {
   })
   unixtime!: number;
 
-  @ManyToMany(() => Alerta, (alertas) => alertas.medida)
+  @ManyToMany(() => Alerta, (alertas: any) => alertas.medida)
   alertas!: Alerta[];
 
-  @ManyToOne(() => Parametro, (parametros) => parametros.medidas)
+  @ManyToOne(() => Parametro, (parametros: any) => parametros.medidas)
   parametros!: Parametro[];
 
-  @ManyToOne(() => Estacao, (estacao) => estacao.medidas)
+  @ManyToOne(() => Estacao, (estacao: any) => estacao.medidas)
   estacao!: Estacao[];
 }

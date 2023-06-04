@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from "express";
 import { DataBaseSource } from "../config/database";
 import { TipoParametro } from "../models";
 import { Parametro } from "../models/Parametro";
+import { Between } from "typeorm";
 
 const parametroRepositorio = DataBaseSource.getRepository(Parametro);
 
@@ -125,22 +126,20 @@ class ParametroController {
     next: NextFunction
   ) {
     const { id } = req.params;
+    const { startTime, endTime } = req.query
+    console.log(startTime,endTime)
     try {
-      const getAllParametro = await parametroRepositorio.find({
-        where: {
-          medidas: {
-            estacao: {
-              estacao_id: Number(id),
-            },
-          },
-        },
-        relations: {
-          medidas: true,
-          tipo: true,
-          unidadeDeMedida: true,
-        },
-      });
-      res.json(getAllParametro);
+      const getAllParametro = await parametroRepositorio
+      .createQueryBuilder("parametro")
+      .leftJoinAndSelect("parametro.medidas", "medida")
+      .leftJoinAndSelect("parametro.tipo", "tipo")
+      .leftJoinAndSelect("parametro.unidadeDeMedida", "unidadeDeMedida")
+      .where("medida.estacao.estacao_id = :id", { id: Number(id) })
+      .andWhere("medida.unixtime >= :startTime", { startTime: Number(startTime) })
+      .andWhere("medida.unixtime <= :endTime", { endTime: Number(endTime) })
+      .getMany();
+
+    res.json(getAllParametro);
     } catch (error) {
       res.json(error);
     }

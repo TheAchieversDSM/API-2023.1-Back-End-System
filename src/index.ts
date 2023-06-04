@@ -1,28 +1,15 @@
-import { DataBaseSource } from "./config/database";
-import express from "express";
-import cors from "cors";
+import {createClientRedis} from "./config/redis";
+import {DataBaseSource} from "./config/database";
+import {generate} from "./controller/generate";
+import {User} from "./models/index";
 import router from "./routes/";
-import { generate } from "./controller/generate";
-import { User } from "./models/index";
+import express from "express";
 import "./config/firebase";
-import { Worker } from "worker_threads";
-import { createClientRedis } from "./config/redis";
+import cors from "cors";
 
 const app = express();
-createClientRedis.connect();
+createClientRedis.connect()
 const usuarioRepository = DataBaseSource.getRepository(User);
-// No worker principal
-const worker = new Worker(`${__dirname}/controller/firebase.ts`);
-worker.on("message", (result) => {
-  console.log(result);
-});
-worker.on("error", (error) => {
-  console.error(error);
-});
-worker.on("exit", (code) => {
-  console.log(`Worker saiu com código ${code}`);
-});
-worker.postMessage({ action: "startRealTime" });
 try {
   DataBaseSource.initialize()
     .then(async () => {
@@ -36,7 +23,7 @@ try {
       }
       console.log("Banco conectado com sucesso");
     })
-    .catch(({ err }) => {
+    .catch(({err}) => {
       console.log(err);
     });
 } catch (error) {
