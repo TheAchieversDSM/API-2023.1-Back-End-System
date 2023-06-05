@@ -109,6 +109,7 @@ async function GetAlerta(medidaConvertidas: MedidaConvertidas[]) {
     console.log(error);
   }
 }
+
 const GetParametro = async ( parametroNome: IParametros, estacao: string, unixtime: string, reference: DatabaseReference ) => {
   const parametroRepository = DataBaseSource.manager.getRepository(Parametro);
   try {
@@ -151,10 +152,41 @@ const GetEstacaoUid = async (uid: string) => {
   }
 };
 
+async function GetLastValue(parametroId: number){
+  const lastValueRepositoy = DataBaseSource.manager.getRepository(Medida);
+  try {
+    const getLastValue: any = lastValueRepositoy
+    .createQueryBuilder("medida")
+    .select("medida.valorMedido")
+    .where("medida.parametrosParametroId = :parametro_id", { parametro_id: parametroId })
+    .orderBy("medida.unixtime", 'DESC')
+    .limit(1)
+    const result = await getLastValue.getOne();
+    if( result !== null && result.valorMedido !== 0 ){
+      return { last: result.valorMedido }
+    }else{
+      return { last: 0 }
+    }
+  } catch (error) {
+    console.log(error)
+  }
+}
+
 async function CalcularOffSetAndFator(values: Dados, estacao: string, unixtime: string, reference: DatabaseReference) {
   const conversao: MedidaConvertidas[] | any = await Promise.all(
     values.parametros.map(async (valores: IParametros) => {
       const returnParametro = await GetParametro(valores,estacao,unixtime,reference).then((res) => res);
+      if( returnParametro?.nome == valores._nomeParametro && valores._nomeParametro === "chuva" ){
+        console.log(valores._medida)
+        if( Number(valores._medida) === 0 ){
+          const matematica = 0;
+          return {conversao: matematica, parametro: returnParametro.nome}
+        }else{
+          const last = await GetLastValue(returnParametro.parametro_id).then((res) => res?.last)
+          const matematica = last === 0 ? Number(valores._medida) : (Number(valores._medida) - last ).toFixed(2)
+          return {conversao: matematica, parametro: returnParametro.nome}
+        }
+      }
       if (returnParametro?.nome == valores._nomeParametro) {
         const matematica = Number(valores._medida);
         return {conversao: matematica, parametro: returnParametro.nome};

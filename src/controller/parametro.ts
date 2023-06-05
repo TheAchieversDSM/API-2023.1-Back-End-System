@@ -127,7 +127,6 @@ class ParametroController {
   ) {
     const { id } = req.params;
     const { startTime, endTime } = req.query
-    console.log(startTime,endTime)
     try {
       const getAllParametro = await parametroRepositorio
       .createQueryBuilder("parametro")
@@ -139,7 +138,17 @@ class ParametroController {
       .andWhere("medida.unixtime <= :endTime", { endTime: Number(endTime) })
       .getMany();
 
-    res.json(getAllParametro);
+      const valores = getAllParametro.map((itens: any) => {
+        const offSet = Number(itens.offset);
+        const fator = Number(itens.fator);
+        const resultadoMedida = itens.medidas.map((values: any) => {
+          const conta = (values.valorMedido * fator + (1 + offSet)).toFixed(2);
+          return {valorMedido: conta, unixtime: values.unixtime};
+        });
+        return {...itens, medidas: resultadoMedida};
+      });
+
+    res.json(valores);
     } catch (error) {
       res.json(error);
     }
