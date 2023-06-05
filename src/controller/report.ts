@@ -27,7 +27,6 @@ class ReportController {
     next: NextFunction
   ) {
     const { uid } = req.params;
-    console.log('teste');
     try {
       const getReportsByStationId = await reportRepository.find({
         where: {
