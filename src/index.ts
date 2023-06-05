@@ -10,8 +10,8 @@ import cors from "cors";
 import path from 'path';
 import fs from "fs";
 
-const certPath = path.join('fullchain.pem');
-const keyPath = path.join('privkey.pem')
+const certPath = path.join(__dirname, 'fullchain.pem');
+const keyPath = path.join(__dirname, 'privkey.pem')
 
 const cert = fs.readFileSync(certPath);
 const key = fs.readFileSync(keyPath);
@@ -45,8 +45,8 @@ try {
   console.log(error);
 }
 const app = https.createServer(serverOptions, api);
-api.listen(5000, () => {
-  console.log("Servidor Express com HTTPS em execução na porta 5000");
+app.listen(5000, () => {
+  console.log("Servidor Express com HTTPS em execução na porta 3000");
 });
 api.use(cors());
 api.use(express.json());
