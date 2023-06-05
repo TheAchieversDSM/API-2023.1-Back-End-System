@@ -177,7 +177,6 @@ async function CalcularOffSetAndFator(values: Dados, estacao: string, unixtime: 
     values.parametros.map(async (valores: IParametros) => {
       const returnParametro = await GetParametro(valores,estacao,unixtime,reference).then((res) => res);
       if( returnParametro?.nome == valores._nomeParametro && valores._nomeParametro === "chuva" ){
-        console.log(valores._medida)
         if( Number(valores._medida) === 0 ){
           const matematica = 0;
           return {conversao: matematica, parametro: returnParametro.nome}
